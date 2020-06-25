@@ -12,7 +12,21 @@
       @request="onRequest"
     >
       <template v-slot:top-right="props">
-        <q-input outlined dense debounce="300" v-model="filter" placeholder="Search">
+        <q-item>
+          <date-range-picker
+            ref="picker"
+            :showWeekNumbers="true"
+            :showDropdowns="true"
+            :autoApply="false"
+            v-model="dateRange"
+          >
+            <template v-slot:input="picker" style="min-width: 350px;">
+              {{ picker.startDate }} - {{ picker.endDate }}
+            </template>
+          </date-range-picker>
+        </q-item>
+
+        <q-input outlined dense debounce="300" v-model="filter" placeholder="Code">
           <template v-slot:append>
             <q-icon name="search"/>
           </template>
@@ -49,12 +63,17 @@
         </q-btn>
 
         <q-btn
+          class="q-mx-none"
           color="primary"
           icon-right="archive"
-          label="Export to csv"
-          no-caps
+          dense
           @click="exportTable"
         />
+      </template>
+      <template v-slot:body-cell-index="props">
+        <q-td :props="props">
+          {{ index(props.row.code) }}
+        </q-td>
       </template>
       <template v-slot:body-cell-status="props">
         <q-td :props="props">
@@ -83,7 +102,8 @@
 <script>
   import {exportFile} from "quasar";
   import '../utils/filter'
-
+  import DateRangePicker from 'vue2-daterange-picker'
+  import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
   function wrapCsvValue(val, formatFn) {
     let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
@@ -98,14 +118,15 @@
   export default {
     data() {
       return {
+        dateRange: {},
         filter: '',
         loading: false,
         pagination: {
           sortBy: 'desc',
           descending: false,
           page: 1,
-          rowsPerPage: 3,
-          rowsNumber: 10
+          rowsPerPage: 4,
+          rowsNumber: 50
         },
         mode: "list",
         columns: [
@@ -113,43 +134,37 @@
             name: "index",
             align: "left",
             label: "Index",
-            field: "index",
-            sortable: true
+            field: "index"
           },
           {
             name: "code",
             align: "left",
             label: "Code",
-            field: "code",
-            sortable: true
+            field: "code"
           },
           {
             name: "created_at",
             align: "left",
             label: "Created At",
-            field: "created_at",
-            sortable: true
+            field: "created_at"
           },
           {
             name: "updated_at",
             align: "left",
             label: "Updated At",
-            field: "updated_at",
-            sortable: true
+            field: "updated_at"
           },
           {
             name: "status",
             align: "left",
             label: "Status",
-            field: "status",
-            sortable: true
+            field: "status"
           },
           {
             name: "action",
             align: "left",
             label: "Action",
-            field: "action",
-            sortable: true
+            field: "action"
           }
         ],
         data: [
@@ -160,25 +175,28 @@
             status: 1
           },
           {
-            code: "HP7",
+            code: "HP8",
             created_at: "14/05/2020",
             updated_at: "14/05/2020",
             status: 1
           },
           {
-            code: "HP7",
+            code: "HP9",
             created_at: "14/05/2020",
             updated_at: "14/05/2020",
             status: 0
           },
           {
-            code: "HP7",
+            code: "HP5",
             created_at: "14/05/2020",
             updated_at: "14/05/2020",
             status: 1
           }
         ]
       };
+    },
+    components: {
+      DateRangePicker
     },
     mounted () {
       // get initial data from server (1st page)
@@ -188,6 +206,9 @@
       })
     },
     methods: {
+      index: function (code) {
+        return this.data.findIndex(x => x.code === code) + 1;
+      },
       exportTable() {
         // naive encoding to csv format
         const content = [this.columns.map(col => wrapCsvValue(col.label))]
@@ -255,7 +276,7 @@
       // SELECT * FROM ... WHERE...LIMIT...
       fetchFromServer (startRow, count, filter, sortBy, descending) {
         const data = filter
-          ? this.data.filter(row => row.name.includes(filter))
+          ? this.data.filter(row => row.code.includes(filter))
           : this.data.slice()
 
         // handle sortBy
@@ -282,7 +303,7 @@
         }
         let count = 0
         this.data.forEach((treat) => {
-          if (treat.name.includes(filter)) {
+          if (treat.code.includes(filter)) {
             ++count
           }
         })
