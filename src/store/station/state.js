@@ -1,6 +1,10 @@
 export default {
   stations: [],
-  paging: {},
+  pagination: {
+    page: 1,
+    rowsPerPage: 10,
+    rowsNumber: 0
+  },
   search: {},
   filter: {},
   station: null,

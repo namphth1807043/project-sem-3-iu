@@ -2,14 +2,15 @@
   <q-page class="q-pa-sm">
     <q-table
       title="Stations"
-      :data="data"
+      :data="stations"
       :hide-header="mode === 'grid'"
       :columns="columns"
-      row-key="name"
+      row-key="Name"
       :grid="mode==='grid'"
       :filter="filter"
       :pagination.sync="pagination"
       @request="onRequest"
+      :loading="isLoading"
     >
       <template v-slot:top-right="props">
         <q-item>
@@ -72,18 +73,18 @@
       </template>
       <template v-slot:body-cell-index="props">
         <q-td :props="props">
-          {{ index(props.row.code) }}
+          {{ index(props.row.Id) }}
         </q-td>
       </template>
       <template v-slot:body-cell-status="props">
         <q-td :props="props">
           <q-chip
-            :color="(props.row.status === 1)?'green':'red'"
+            :color="(props.row.Status === 1)?'green':'red'"
             text-color="white"
             dense
             class="text-weight-bolder"
             square
-          >{{props.row.status | filterStatus}}
+          >{{props.row.Status | filterStatus}}
           </q-chip>
         </q-td>
       </template>
@@ -101,10 +102,11 @@
 
 <script>
   import {exportFile} from "quasar";
+  import {mapState, mapActions} from 'vuex'
   import '../utils/filter'
   import DateRangePicker from 'vue2-daterange-picker'
   import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
-  import { mapMutations, mapState, mapGetters } from 'vuex'
+
   function wrapCsvValue(val, formatFn) {
     let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
@@ -120,15 +122,6 @@
     data() {
       return {
         dateRange: {},
-        filter: '',
-        loading: false,
-        pagination: {
-          sortBy: 'desc',
-          descending: false,
-          page: 1,
-          rowsPerPage: 4,
-          rowsNumber: 50
-        },
         mode: "list",
         columns: [
           {
@@ -141,25 +134,25 @@
             name: "code",
             align: "left",
             label: "Code",
-            field: "code"
+            field: "Name"
           },
           {
             name: "created_at",
             align: "left",
             label: "Created At",
-            field: "created_at"
+            field: "CreatedAt"
           },
           {
             name: "updated_at",
             align: "left",
             label: "Updated At",
-            field: "updated_at"
+            field: "UpdatedAt"
           },
           {
             name: "status",
             align: "left",
             label: "Status",
-            field: "status"
+            field: "Status"
           },
           {
             name: "action",
@@ -167,54 +160,32 @@
             label: "Action",
             field: "action"
           }
-        ],
-        data: [
-          {
-            code: "HP7",
-            created_at: "14/05/2020",
-            updated_at: "14/05/2020",
-            status: 1
-          },
-          {
-            code: "HP8",
-            created_at: "14/05/2020",
-            updated_at: "14/05/2020",
-            status: 1
-          },
-          {
-            code: "HP9",
-            created_at: "14/05/2020",
-            updated_at: "14/05/2020",
-            status: 0
-          },
-          {
-            code: "HP5",
-            created_at: "14/05/2020",
-            updated_at: "14/05/2020",
-            status: 1
-          }
         ]
       };
     },
     components: {
       DateRangePicker
     },
-    mounted () {
-      // get initial data from server (1st page)
+    computed: {
+      ...mapState('station', ['stations', 'pagination', 'isLoading','filter']),
+    },
+    mounted() {
       this.onRequest({
-        pagination: this.pagination,
-        filter: undefined
+        pagination: this.pagination
       })
     },
     methods: {
-      index: function (code) {
-        return this.data.findIndex(x => x.code === code) + 1;
+      ...mapActions({
+        loadStations: 'station/loadStations'
+      }),
+      index: function (id) {
+        return this.stations.findIndex(x => x.Id === id) + 1;
       },
       exportTable() {
         // naive encoding to csv format
         const content = [this.columns.map(col => wrapCsvValue(col.label))]
           .concat(
-            this.data.map(row =>
+            this.stations.map(row =>
               this.columns
                 .map(col =>
                   wrapCsvValue(
@@ -239,83 +210,16 @@
           });
         }
       },
-      onRequest (props) {
-        const { page, rowsPerPage, sortBy, descending } = props.pagination
-        const filter = props.filter
-
-        this.loading = true
-
-        // emulate server
-        setTimeout(() => {
-          // update rowsCount with appropriate value
-          this.pagination.rowsNumber = this.getRowsNumberCount(filter)
-
-          // get all rows if "All" (0) is selected
-          const fetchCount = rowsPerPage === 0 ? this.pagination.rowsNumber : rowsPerPage
-
-          // calculate starting row of data
-          const startRow = (page - 1) * rowsPerPage
-
-          // fetch data from "server"
-          const returnedData = this.fetchFromServer(startRow, fetchCount, filter, sortBy, descending)
-
-          // clear out existing data and add new
-          this.data.splice(0, this.data.length, ...returnedData)
-
-          // don't forget to update local pagination object
-          this.pagination.page = page
-          this.pagination.rowsPerPage = rowsPerPage
-          this.pagination.sortBy = sortBy
-          this.pagination.descending = descending
-
-          // ...and turn of loading indicator
-          this.loading = false
-        }, 1500)
-      },
-
-      // emulate ajax call
-      // SELECT * FROM ... WHERE...LIMIT...
-      fetchFromServer (startRow, count, filter, sortBy, descending) {
-        const data = filter
-          ? this.data.filter(row => row.code.includes(filter))
-          : this.data.slice()
-
-        // handle sortBy
-        if (sortBy) {
-          const sortFn = sortBy === 'desc'
-            ? (descending
-                ? (a, b) => (a.name > b.name ? -1 : a.name < b.name ? 1 : 0)
-                : (a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0)
-            )
-            : (descending
-                ? (a, b) => (parseFloat(b[sortBy]) - parseFloat(a[sortBy]))
-                : (a, b) => (parseFloat(a[sortBy]) - parseFloat(b[sortBy]))
-            )
-          data.sort(sortFn)
-        }
-
-        return data.slice(startRow, startRow + count)
-      },
-
-      // emulate 'SELECT count(*) FROM ...WHERE...'
-      getRowsNumberCount (filter) {
-        if (!filter) {
-          return this.data.length
-        }
-        let count = 0
-        this.data.forEach((treat) => {
-          if (treat.code.includes(filter)) {
-            ++count
-          }
+      onRequest(props) {
+        console.log(props)
+        const {page, rowsPerPage} = props.pagination
+        this.loadStations({
+          page: page,
+          size: rowsPerPage
         })
-        return count
       }
     }
   };
 </script>
 <style>
-  .q-chip__content {
-    display: block;
-    text-align: center;
-  }
 </style>

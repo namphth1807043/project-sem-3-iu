@@ -1,6 +1,6 @@
 import { httpClient } from 'src/api/http';
 
-export async function loadArticles({ commit, dispatch }, { filterData, page, size }) {
+export async function loadStations({ commit, dispatch }, { page, size }) {
   commit('fetchStationsBegin');
 
   try {
@@ -8,7 +8,6 @@ export async function loadArticles({ commit, dispatch }, { filterData, page, siz
     }
 
     const queryParams = new URLSearchParams({
-      filter: JSON.stringify(filterQueryParam),
       page: page,
       size: size
     }).toString()

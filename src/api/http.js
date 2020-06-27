@@ -3,7 +3,7 @@ import httpBuilder from './httpBuilder'
 // import {decorateLogoutWhenExpiredInterceptor} from '../utils/axios'
 
 const baseClient = axios.create({
-    baseURL: process.env.API_URL
+  baseURL: process.env.API_URL
 });
 
 
