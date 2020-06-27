@@ -123,6 +123,11 @@
       return {
         dateRange: {},
         mode: "list",
+        pagination: {
+          page: 1,
+          rowsPerPage: 10,
+          rowsNumber: 0
+        },
         columns: [
           {
             name: "index",
@@ -167,7 +172,7 @@
       DateRangePicker
     },
     computed: {
-      ...mapState('station', ['stations', 'pagination', 'isLoading','filter']),
+      ...mapState('station', ['stations', 'paging', 'isLoading','filter']),
     },
     mounted() {
       this.onRequest({
@@ -211,12 +216,12 @@
         }
       },
       onRequest(props) {
-        console.log(props)
         const {page, rowsPerPage} = props.pagination
         this.loadStations({
           page: page,
           size: rowsPerPage
         })
+        this.pagination = this.paging
       }
     }
   };

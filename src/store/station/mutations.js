@@ -8,9 +8,9 @@ export function fetchStationsBegin(state) {
 export function fetchStationSuccess(state, {stations, paging}) {
   state.stations = stations
   state.error = null
-  state.pagination.page = paging.Page
-  state.pagination.rowsPerPage = paging.Size
-  state.pagination.rowsNumber = paging.Total
+  state.paging.page = paging.Page
+  state.paging.rowsPerPage = paging.Size
+  state.paging.rowsNumber = paging.Total
   state.isLoading = false
 }
 
