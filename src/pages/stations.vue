@@ -27,7 +27,12 @@
           </date-range-picker>
         </q-item>
 
-        <q-input outlined dense debounce="300" v-model="filter" placeholder="Code">
+        <q-input outlined
+                 dense
+                 debounce="300"
+                 v-model="filter.name"
+                 placeholder="Name"
+                 @keyup.enter="loadStations">
           <template v-slot:append>
             <q-icon name="search"/>
           </template>
@@ -53,7 +58,8 @@
           round
           dense
           :icon="mode === 'grid' ? 'list' : 'grid_on'"
-          @click="mode = mode === 'grid' ? 'list' : 'grid'; separator = mode === 'grid' ? 'none' : 'horizontal'"
+          @click="mode = mode === 'grid' ? 'list' : 'grid';
+          separator = mode === 'grid' ? 'none' : 'horizontal'"
           v-if="!props.inFullscreen"
         >
           <q-tooltip
@@ -171,6 +177,8 @@
     components: {
       DateRangePicker
     },
+    watch:{
+    },
     computed: {
       ...mapState('station', ['stations', 'paging', 'isLoading','filter']),
     },
@@ -217,7 +225,9 @@
       },
       onRequest(props) {
         const {page, rowsPerPage} = props.pagination
+        console.log(this.filter)
         this.loadStations({
+          filter: this.filter,
           page: page,
           size: rowsPerPage
         })
