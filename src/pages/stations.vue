@@ -27,31 +27,12 @@
           </date-range-picker>
         </q-item>
 
-        <q-input outlined
+        <q-input
                  dense
                  debounce="300"
                  v-model="filter.name"
-                 placeholder="Name"
-                 @keyup.enter="loadStations">
-          <template v-slot:append>
-            <q-icon name="search"/>
-          </template>
+                 placeholder="Name">
         </q-input>
-
-        <q-btn
-          flat
-          round
-          dense
-          :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-          @click="props.toggleFullscreen"
-          v-if="mode === 'list'"
-        >
-          <q-tooltip
-            :disable="$q.platform.is.mobile"
-            v-close-popup
-          >{{props.inFullscreen ? 'Exit Fullscreen' : 'Toggle Fullscreen'}}
-          </q-tooltip>
-        </q-btn>
 
         <q-btn
           flat
@@ -142,9 +123,9 @@
             field: "index"
           },
           {
-            name: "code",
+            name: "name",
             align: "left",
-            label: "Code",
+            label: "Name",
             field: "Name"
           },
           {
@@ -177,10 +158,9 @@
     components: {
       DateRangePicker
     },
-    watch:{
-    },
+    watch: {},
     computed: {
-      ...mapState('station', ['stations', 'paging', 'isLoading','filter']),
+      ...mapState('station', ['stations', 'paging', 'isLoading', 'filter']),
     },
     mounted() {
       this.onRequest({
@@ -225,13 +205,12 @@
       },
       onRequest(props) {
         const {page, rowsPerPage} = props.pagination
-        console.log(this.filter)
+        this.pagination = this.paging
         this.loadStations({
           filter: this.filter,
           page: page,
           size: rowsPerPage
         })
-        this.pagination = this.paging
       }
     }
   };
