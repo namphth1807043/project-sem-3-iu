@@ -7,9 +7,9 @@ const routes = [
     children: [
       { path: '/dashboard', component: () => import('pages/dashboard.vue') },
       { path: '/stations', component: () => import('pages/stations.vue') },
-      { path: '/employee_salary_list', component: () => import('pages/employee_salary_list.vue') },
-      { path: "/train", component: () => import("pages/trainList.vue") },
-      { path: "/object", component: () => import("pages/objectList.vue") }
+      { path: "/trains", component: () => import("pages/train.vue") },
+      { path: "/objects", component: () => import("pages/objects.vue") },
+      { path: "/orders", component: () => import("pages/order.vue") }
     ]
   }
 ]

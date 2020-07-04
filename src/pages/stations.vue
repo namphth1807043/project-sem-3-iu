@@ -15,16 +15,16 @@
       <template v-slot:top-right="props">
         <q-item>
           <date-range-picker
-            ref="picker"
-            :showWeekNumbers="true"
-            :showDropdowns="true"
-            :autoApply="false"
-            v-model="dateRange"
-          >
-            <template v-slot:input="picker" style="min-width: 350px;">
-              {{ picker.startDate }} - {{ picker.endDate }}
-            </template>
-          </date-range-picker>
+          ref="picker"
+          :showWeekNumbers="true"
+          :showDropdowns="true"
+          :autoApply="false"
+          v-model="dateRange"
+        >
+          <template v-slot:input="picker" style="min-width: 350px;">
+            {{ picker.startDate }} - {{ picker.endDate }}
+          </template>
+        </date-range-picker>
         </q-item>
 
         <q-input

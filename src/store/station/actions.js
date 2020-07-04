@@ -26,3 +26,4 @@ export async function loadStations({ commit, dispatch }, { filter, page, size })
     return null
   }
 }
+

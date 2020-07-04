@@ -18,3 +18,4 @@ export function fetchStationsError(state, error) {
   state.error = error
   state.isLoading = false
 }
+

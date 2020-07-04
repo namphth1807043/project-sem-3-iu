@@ -33,6 +33,16 @@
               </q-item-section>
             </q-item>
 
+            <q-item active-class="tab-active" to="/orders" class="q-ma-sm navigation-item" clickable v-ripple>
+              <q-item-section avatar>
+                <q-icon name="receipt"/>
+              </q-item-section>
+
+              <q-item-section>
+                Orders
+              </q-item-section>
+            </q-item>
+
             <q-item active-class="tab-active" to="/stations" class="q-ma-sm navigation-item" clickable v-ripple>
               <q-item-section avatar>
                 <q-icon name="house"/>
@@ -43,34 +53,24 @@
               </q-item-section>
             </q-item>
 
-            <q-item active-class="tab-active" to="/employee_salary_list" class="q-ma-sm navigation-item" clickable
+            <q-item active-class="tab-active" to="/trains" class="q-ma-sm navigation-item" clickable
                     v-ripple>
               <q-item-section avatar>
-                <q-icon name="list"/>
+                <q-icon name="train"/>
               </q-item-section>
 
               <q-item-section>
-                Employee Salary List
+                Trains
               </q-item-section>
             </q-item>
-            <q-item active-class="tab-active" to="/train" class="q-ma-sm navigation-item" clickable
+            <q-item active-class="tab-active" to="/objects" class="q-ma-sm navigation-item" clickable
                     v-ripple>
               <q-item-section avatar>
-                <q-icon name="list"/>
+                <q-icon name="pregnant_woman"/>
               </q-item-section>
 
               <q-item-section>
-                Train
-              </q-item-section>
-            </q-item>
-            <q-item active-class="tab-active" to="/object" class="q-ma-sm navigation-item" clickable
-                    v-ripple>
-              <q-item-section avatar>
-                <q-icon name="list"/>
-              </q-item-section>
-
-              <q-item-section>
-                Object
+                Objects
               </q-item-section>
             </q-item>
           </q-list>
