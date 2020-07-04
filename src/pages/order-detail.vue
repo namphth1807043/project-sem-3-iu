@@ -37,6 +37,12 @@
             field: "index"
           },
           {
+            name: "code",
+            align: "left",
+            label: "Ticket Code",
+            field: "Code"
+          },
+          {
             name: "passenger_name",
             align: "left",
             label: "Passenger Name",

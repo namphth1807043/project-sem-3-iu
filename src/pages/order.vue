@@ -18,6 +18,15 @@
           outlined
           dense
           debounce="300"
+          v-model="filter.code"
+          label="Ticket code">
+        </q-input>
+
+        <q-input
+          class="q-pr-md"
+          outlined
+          dense
+          debounce="300"
           v-model="filter.name"
           label="Customer name">
         </q-input>
