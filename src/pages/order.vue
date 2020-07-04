@@ -191,7 +191,7 @@
         </q-td>
       </template>
     </q-table>
-    <q-dialog full-width v-model="isLoadOrderDetail">
+    <q-dialog v-model="isLoadOrderDetail">
       <q-card>
         <q-card-section>
           <order-detail :orderId="orderId"></order-detail>
