@@ -5,6 +5,7 @@
       :data="orderDetail"
       :columns="cols"
       row-key="Name"
+      hide-pagination
     >
       <template v-slot:body-cell-index="props">
         <q-td :props="props">
