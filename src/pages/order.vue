@@ -52,6 +52,7 @@
             v-model="priceRange"
             :min="0"
             :max="10000000"
+            @change="price"
           />
         </div>
 
@@ -399,6 +400,17 @@
             ...this.filter,
             startDate : startDate,
             endDate: endDate
+          },
+          page: this.pagination.page,
+          size: this.pagination.rowsPerPage
+        })
+      },
+      price() {
+        this.loadOrders({
+          filter : {
+            ...this.filter,
+            minPrice: this.priceRange.min,
+            maxPrice: this.priceRange.max
           },
           page: this.pagination.page,
           size: this.pagination.rowsPerPage
