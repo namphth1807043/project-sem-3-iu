@@ -192,14 +192,12 @@
       </template>
     </q-table>
     <q-dialog v-model="isLoadOrderDetail">
-      <q-card>
         <q-card-section>
           <order-detail :orderId="orderId"></order-detail>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="OK" color="primary" v-close-popup />
         </q-card-actions>
-      </q-card>
     </q-dialog>
   </q-page>
 </template>
