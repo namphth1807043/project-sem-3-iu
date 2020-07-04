@@ -1,7 +1,6 @@
 <template>
   <q-page class="q-pa-sm">
     <q-table
-      title="Orders"
       :data="orders"
       :hide-header="mode === 'grid'"
       :columns="columns"
@@ -12,9 +11,9 @@
       @request="onRequest"
       :loading="isLoading"
     >
-      <template v-slot:top-right="props">
+      <template v-slot:top="props">
         <q-input
-          class="q-pr-md"
+          class="q-pr-sm"
           outlined
           dense
           debounce="300"
@@ -23,7 +22,7 @@
         </q-input>
 
         <q-input
-          class="q-pr-md"
+          class="q-pr-sm"
           outlined
           dense
           debounce="300"
@@ -32,7 +31,7 @@
         </q-input>
 
         <q-input
-          class="q-pr-md"
+          class="q-pr-sm"
           autocomplete="off"
           outlined
           dense
@@ -42,6 +41,7 @@
         </q-input>
 
         <q-input
+          class="q-mr-sm"
           outlined
           dense
           debounce="300"
@@ -49,7 +49,7 @@
           label="Customer email">
         </q-input>
 
-        <div class="q-ma-md" style="width: 270px;">
+        <div class="q-ma-sm" style="width: 200px;">
           <q-badge color="secondary" v-if="priceRange.min > 0">
             Price: {{ priceRange.min | formatInteger}} to {{ priceRange.max | formatInteger}} (0 to 10,000,000 VND)
           </q-badge>
