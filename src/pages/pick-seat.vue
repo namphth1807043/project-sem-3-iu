@@ -56,9 +56,8 @@
         <div class="text-bold q-pt-lg" style="padding-left: 25%; color: #0382c1">Coach number 1: Soft seat,
           air-conditioned
         </div>
-        <div class="row seat-train-car q-pl-lg q-py-md q-ml-md q-my-lg" style="width: 88%">
-          <div style="width: 5%"
-               class="seat text-center"
+        <div class="row seat-train-car q-pl-lg q-py-md q-ml-md q-my-lg" style="width: 1255px">
+          <div class="seat text-center"
                v-for="(item,index) in 64"
                @click="seatSelected = index"
                :class="{ 'bg-green-5 text-white': index === seatSelected }">
@@ -302,9 +301,10 @@
 
   .seat {
     border: solid 2px black;
-    border-radius: 5px;
-    margin: 5px;
     cursor: pointer;
+    width: 65px;
+    margin: 5px;
+    border-radius: 5px;
   }
 
   .cart-item {
@@ -319,7 +319,7 @@
   .cart {
     position: fixed;
     right: 2%;
-    top: 11%;
+    top: 10%;
   }
 
   .seat-status-1 {
@@ -334,6 +334,6 @@
   }
 
   .seat-status-3 {
-    margin-right:28.5%;
+    margin-right:27.3%;
   }
 </style>
