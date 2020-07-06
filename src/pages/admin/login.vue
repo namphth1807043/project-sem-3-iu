@@ -36,7 +36,7 @@
               />
 
               <div>
-                <q-btn label="Login" to="/dashboard" type="button" color="primary"/>
+                <q-btn label="Login" to="/admin/dashboard" type="button" color="primary"/>
 
                 <a style="font-size: 30px;" class="float-right" href="https://github.com/sponsors/mayank091193"
                    target="_blank" title="Donate"><i class="fas fa-heart" style="color: #eb5daa"></i></a>

@@ -207,9 +207,9 @@
 <script>
   import {exportFile} from "quasar";
   import {mapState, mapActions} from 'vuex'
-  import '../utils/filter'
-  import {Constants} from '../utils/const'
-  import OrderDetail from '../pages/order-detail'
+  import '../../utils/filter'
+  import {Constants} from 'src/utils/const'
+  import OrderDetail from './order-detail'
   import DateRangePicker from 'vue2-daterange-picker'
   import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
   import {httpClient} from "src/api/http";

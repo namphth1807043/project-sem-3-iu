@@ -1,129 +1,130 @@
 <template>
-  <q-layout view="lHh LpR lFf">
-    <q-header reveal elevated style="background: linear-gradient(145deg, rgb(74, 94, 137) 15%, rgb(30, 75, 131) 70%);">
-      <q-toolbar>
-        <q-btn @click="left = !left" flat round dense icon="menu" class="q-mr-sm"/>
-        <!--          <q-avatar>-->
-        <!--            <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">-->
-        <!--          </q-avatar>-->
+  <q-layout view="hHh lpR fff">
 
-        <q-toolbar-title>Undefined Admin</q-toolbar-title>
-        <q-btn flat round dense icon="fas fa-sign-out-alt" to="/"/>
+    <q-header elevated class="bg-white text-white">
+      <q-toolbar class="toolbar">
+        <q-toolbar-title class="q-pt-sm">
+          <router-link to="/">
+            <img width="30%"
+                 style="border-radius: 10px"
+                 src="../statics/logo.png" alt=""/>
+          </router-link>
+        </q-toolbar-title>
+
+        <q-btn-group class="q-mr-xs" unelevated>
+          <a href="/" class="header__icon-link">
+            <q-btn
+              class="header__list-icon"
+              :ripple="false"
+              no-caps stack unelevated
+            >
+              <span class="header__icon"><q-icon name="search" color="blue-10"></q-icon></span>
+              <div class="header__icon-text">Find ticket</div>
+            </q-btn>
+          </a>
+          <a href="/" class="header__icon-link">
+            <q-btn
+              class="header__list-icon"
+              :ripple="false"
+              no-caps stack unelevated
+            >
+              <span class="header__icon"><q-icon name="event_seat" color="blue-10"></q-icon></span>
+              <div class="header__icon-text">Seat information</div>
+            </q-btn>
+          </a>
+          <a href="/" class="header__icon-link">
+            <q-btn
+              class="header__list-icon"
+              :ripple="false"
+              no-caps stack unelevated
+            >
+              <span class="header__icon"><q-icon name="redeem" color="blue-10"></q-icon></span>
+              <div class="header__icon-text">Promotions</div>
+            </q-btn>
+          </a>
+          <a href="/" class="header__icon-link">
+            <q-btn
+              class="header__list-icon"
+              :ripple="false"
+              no-caps stack unelevated
+            >
+              <span class="header__icon"><q-icon name="content_paste" color="blue-10"></q-icon></span>
+              <div class="header__icon-text">Regulations</div>
+            </q-btn>
+          </a>
+          <a href="/" class="header__icon-link">
+            <q-btn
+              class="header__list-icon"
+              :ripple="false"
+              no-caps stack unelevated
+            >
+              <span class="header__icon"><q-icon name="contacts" color="blue-10"></q-icon></span>
+              <div class="header__icon-text">Contacts</div>
+            </q-btn>
+          </a>
+        </q-btn-group>
+
       </q-toolbar>
     </q-header>
-    <q-drawer class="left-navigation text-white"
-              show-if-above v-model="left"
-              style="background-image: url(https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-2.32103624.jpg) !important;"
-              side="left"
-              elevated>
-      <div style="height: calc(100% - 117px);padding:10px">
-        <q-toolbar>
-          <q-toolbar-title>Hoài Nam</q-toolbar-title>
-        </q-toolbar>
-        <hr/>
-        <q-scroll-area style="height:100%;">
-          <q-list padding>
-            <q-item active-class="tab-active" to="/dashboard" exact class="q-ma-sm navigation-item" clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="dashboard"/>
-              </q-item-section>
-
-              <q-item-section>
-                Dashboard
-              </q-item-section>
-            </q-item>
-
-            <q-item active-class="tab-active" to="/orders" class="q-ma-sm navigation-item" clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="receipt"/>
-              </q-item-section>
-
-              <q-item-section>
-                Orders
-              </q-item-section>
-            </q-item>
-
-            <q-item active-class="tab-active" to="/stations" class="q-ma-sm navigation-item" clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="house"/>
-              </q-item-section>
-
-              <q-item-section>
-                Stations
-              </q-item-section>
-            </q-item>
-
-            <q-item active-class="tab-active" to="/trains" class="q-ma-sm navigation-item" clickable
-                    v-ripple>
-              <q-item-section avatar>
-                <q-icon name="train"/>
-              </q-item-section>
-
-              <q-item-section>
-                Trains
-              </q-item-section>
-            </q-item>
-            <q-item active-class="tab-active" to="/objects" class="q-ma-sm navigation-item" clickable
-                    v-ripple>
-              <q-item-section avatar>
-                <q-icon name="pregnant_woman"/>
-              </q-item-section>
-
-              <q-item-section>
-                Objects
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-scroll-area>
-      </div>
-    </q-drawer>
 
     <q-page-container>
-      <q-page class="row no-wrap">
-        <div class="col">
-          <div class="full-height">
-            <q-scroll-area class="col q-pr-sm full-height" visible>
-              <router-view/>
-            </q-scroll-area>
-          </div>
-        </div>
-      </q-page>
+      <router-view/>
     </q-page-container>
 
+    <q-footer bordered class="bg-white">
+      <q-toolbar>
+        <q-toolbar-title class="text-grey text-center text-subtitle1">
+          Vietnam Railways, 118 Le Duan, Hoan Kiem, Hanoi. Phone number: 19006469. Email: dsvn@vr.com.vn
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-footer>
 
   </q-layout>
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                left: false
-            }
-        }
+  export default {
+    data() {
+      return {
+        left: false
+      }
     }
+  }
 </script>
 
 <style>
-  .q-drawer {
-    /*background-image: url(https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-2.32103624.jpg) !important;*/
-    background-image: url('/statics/images/lake.jpg') !important;
-    background-size: cover !important;
+  .toolbar {
+    padding: 0 150px;
   }
 
-  .q-drawer__content {
-    background-color: rgba(1, 1, 1, 0.75);
+  .header__icon-top {
+    right: 16px !important;
+    border: 1.4px solid white;
+    color: white;
+    background: orange;
+    border-radius: 50px;
+    font-size: 9px;
+    padding: 5px;
+    height: 12px;
+    top: 4px;
   }
 
-  .navigation-item {
-    border-radius: 5px;
+  .header__icon {
+    color: #fff;
+    font-size: 15px;
   }
 
-  .tab-active {
-    background-color: green;
+  .header__list-icon {
+    padding-top: 10px;
   }
 
-  body {
-    background: #f1f1f1 !important;
+  .header__icon-text {
+    color: gray;
+    font-size: 13px;
+  }
+
+  .header__icon-link {
+    text-decoration: none;
+    color: gray;
   }
 </style>

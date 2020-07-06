@@ -22,8 +22,7 @@
 </template>
 <script>
   import {mapState, mapActions} from 'vuex'
-  import '../utils/filter'
-  import {Constants} from '../utils/const'
+  import '../../utils/filter'
   import {httpClient} from "src/api/http";
   import axios from 'axios'
 
