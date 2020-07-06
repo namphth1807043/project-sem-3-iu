@@ -5,9 +5,10 @@
       <q-toolbar class="toolbar">
         <q-toolbar-title class="q-pt-sm">
           <router-link to="/">
-            <img width="30%"
-                 style="border-radius: 10px"
-                 src="../statics/logo.png" alt=""/>
+            <div style="width: 20%">
+              <img style="border-radius: 10px;width: 100%"
+                   src="../statics/logo.png" alt=""/>
+            </div>
           </router-link>
         </q-toolbar-title>
 
