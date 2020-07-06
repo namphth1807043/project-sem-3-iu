@@ -196,16 +196,24 @@
               <q-item>
                 <q-item-section>
                   <div class="row">
-                    <div class="q-mr-md seat-status-1 bg-red-7"></div>
-                    <div class="text-h5 seat-status-2 q-pt-xs">Not available</div>
-                    <div class="bg-yellow-9 q-mr-md seat-status-1"></div>
-                    <div class="text-h5 q-pt-xs">Being transacted</div>
+                    <div class="col-6">
+                      <div class="q-mr-md seat-status-1 float-left bg-red-7"></div>
+                      <div class="text-h5 seat-status-3 q-pt-xs">Not available</div>
+                    </div>
+                    <div class="col-6">
+                      <div class="bg-yellow-9 q-mr-md seat-status-1 float-left"></div>
+                      <div class="text-h5 q-pt-xs">Being transacted</div>
+                    </div>
                   </div>
                   <div class="row">
-                    <div class="q-mr-md seat-status-1"></div>
-                    <div class="text-h5 seat-status-3 q-pt-xs">Available</div>
-                    <div class="bg-green-5 q-mr-md seat-status-1"></div>
-                    <div class="text-h5 q-pt-xs">Being selected</div>
+                    <div class="col-6">
+                      <div class="q-mr-md seat-status-1 float-left"></div>
+                      <div class="text-h5 seat-status-3 q-pt-xs">Available</div>
+                    </div>
+                    <div class="col-6">
+                      <div class="bg-green-5 q-mr-md seat-status-1 float-left"></div>
+                      <div class="text-h5 q-pt-xs">Being selected</div>
+                    </div>
                   </div>
                 </q-item-section>
               </q-item>
@@ -294,7 +302,7 @@
     cursor: pointer;
   }
 
-  .train-car-status{
+  .train-car-status {
     border-radius: 10%;
     height: 68%;
   }
@@ -330,10 +338,9 @@
   }
 
   .seat-status-2 {
-    margin-right:24%;
+    margin-right: 24%;
   }
 
   .seat-status-3 {
-    margin-right:27.3%;
   }
 </style>
