@@ -27,3 +27,25 @@ export async function loadStations({ commit, dispatch }, { filter, page, size })
   }
 }
 
+// export async function loadStation({commit, dispatch}, {orderId}) {
+//   commit('fetchStationBegin');
+//
+//   try {
+//
+//     const response = await httpClient.get(`/orders/${orderId}`)
+//     console.log(response)
+//     commit('fetchStationSuccess', {
+//       orderDetail: response
+//     })
+//
+//     if (response && response.length > 0) {
+//       return response
+//     } else {
+//       return null
+//     }
+//   } catch (error) {
+//     commit('fetchStationError', error)
+//     return null
+//   }
+// }
+

@@ -3,25 +3,29 @@
     <div class="row">
       <div class="col-9">
         <q-chip square style="background-color: #0382c1" text-color="white" class="q-mt-md q-ml-md">
-          <span class="text-bold">Departing direction&nbsp;</span>date 11/07/2020 from Hải Phòng to Hà Nội
+          <span class="text-bold">Departing direction&nbsp;</span>date {{ departureDay }} from {{ startStationName }} to
+          {{ endStationName }}
         </q-chip>
         <div class="row">
-          <div v-for="(item,index) of 4" class="q-ma-lg train" style="width: 200px; height: 250px">
-            <div @click="trainSelected = index"
-                 :class="[{ trainNoClick: index !== trainSelected, trainOnClick: index === trainSelected }]">
+          <div v-for="(item,index) of routes"
+               :key="item.TrainId"
+               class="q-ma-lg train"
+               style="width: 200px; height: 250px">
+            <div @click="trainSelected = item.TrainId"
+                 :class="[{ trainNoClick: item.TrainId !== trainSelected, trainOnClick: item.TrainId === trainSelected }]">
               <q-chip dense
                       square
                       text-color="white"
                       class="train-code text-bold"
                       style="background-color: #0382c1">
-                LP2
+                {{ item.TrainCode }}
               </q-chip>
               <div class="train-info">
                 <div class="">
-                  Departure <span class="text-bold">11/07 06:10</span>
+                  Departure <span class="text-bold">{{ departureDay.slice(0,-5) }} {{ item.TravelTime | time }}</span>
                 </div>
                 <div class="">
-                  Arrival <span class="float-right text-bold">11/07 06:10</span>
+                  Arrival &nbsp;<span class="float-right text-bold">11/07  {{ getArrivalTime(index) | time }}</span>
                 </div>
                 <div class="">
                   Ordered <span class="float-right">Available</span>
@@ -228,7 +232,7 @@
 
 <script>
   import '../utils/filter'
-
+  import {mapActions, mapState} from "vuex";
 
   const stringOptions = [
     'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
@@ -243,16 +247,47 @@
         seatSelected: undefined,
         options: stringOptions,
         date: '2019/02/01',
-        trainClicked: false
+        trainClicked: false,
+        arrivalTime: []
       }
     },
-
+    mounted() {
+      this.getArrivalTime()
+    },
+    computed: {
+      ...mapState('ticket', ['stations', 'startStation', 'endStation', 'departureDay', 'routes']),
+      startStationName() {
+        let points = this.routes
+        return points[0].Points[0].NameStation
+      },
+      endStationName() {
+        let points = this.routes
+        return points[0].Points[points.length - 1].NameStation
+      }
+    },
     methods: {
+      ...mapActions({
+        loadStations: 'ticket/loadAllStations',
+        loadRoutes: 'ticket/loadRoutes',
+        loadSeats: 'ticket/loadSeats'
+      }),
       filterFn(val, update, abort) {
         update(() => {
           const needle = val.toLowerCase()
           this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
         })
+      },
+      getArrivalTime(index) {
+        console.log(this.routes)
+        if (index !== undefined){
+          let rs = this.routes
+          let route = rs[index]
+          let arrivalTime = route.TravelTime
+          for (let item of route.Points) {
+            arrivalTime += item.ArrivalTime
+          }
+          return arrivalTime
+        }
       }
     }
   }

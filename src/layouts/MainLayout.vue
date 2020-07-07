@@ -63,10 +63,95 @@
               <div class="header__icon-text">Contacts</div>
             </q-btn>
           </a>
+          <q-btn
+            class="header__list-icon"
+            :ripple="false"
+            no-caps stack unelevated
+            @click="cart = true"
+          >
+            <span class="header__icon"><q-icon name="shopping_cart" color="blue-10"></q-icon></span>
+            <div class="header__icon-text">Your cart</div>
+          </q-btn>
         </q-btn-group>
 
       </q-toolbar>
     </q-header>
+
+    <q-dialog v-model="cart">
+      <q-card bordered style="width: 700px; max-width: 80vw;">
+        <q-item>
+          <q-item-section side>
+            <q-icon name="shopping_cart" size="md" color="blue-9"/>
+          </q-item-section>
+
+          <q-item-section class="text-bold text-blue-9">
+            Your cart
+          </q-item-section>
+
+          <q-item-section side class="text-bold text-blue-9">
+            <q-btn to="payment" label="Buy ticket" color="blue-8"/>
+          </q-item-section>
+        </q-item>
+
+        <q-separator/>
+
+        <q-card-section>
+          <q-list>
+
+            <q-item>
+              <q-item-section>
+                <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
+                <q-item-label>11/07/2020 06:10</q-item-label>
+                <q-item-label>NML coach 1 seat 56</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
+              </q-item-section>
+            </q-item>
+
+            <q-separator inset=""/>
+
+            <q-item>
+              <q-item-section>
+                <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
+                <q-item-label>11/07/2020 06:10</q-item-label>
+                <q-item-label>NML coach 1 seat 56</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
+              </q-item-section>
+            </q-item>
+
+            <q-separator inset=""/>
+
+            <q-item>
+              <q-item-section>
+                <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
+                <q-item-label>11/07/2020 06:10</q-item-label>
+                <q-item-label>NML coach 1 seat 56</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
+              </q-item-section>
+            </q-item>
+
+            <q-separator inset=""/>
+
+            <q-item>
+              <q-item-section>
+                <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
+                <q-item-label>11/07/2020 06:10</q-item-label>
+                <q-item-label>NML coach 1 seat 56</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
+              </q-item-section>
+            </q-item>
+
+          </q-list>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 
     <q-page-container>
       <router-view/>
@@ -87,7 +172,10 @@
   export default {
     data() {
       return {
-        left: false
+        cart : false,
+        left: false,
+        fab2: false,
+        hideLabels: false
       }
     }
   }

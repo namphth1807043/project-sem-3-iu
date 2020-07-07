@@ -9,14 +9,21 @@
       <q-item-label class="text-white q-mx-md text-bold">From</q-item-label>
       <q-select
         filled
-        class="bg-white q-ma-md input-date"
-        v-model="model"
+        v-model="from"
         use-input
+        hide-selected
+        fill-input
         input-debounce="0"
         label="From"
         :options="options"
         @filter="filterFn"
+        class="bg-white q-ma-md input-date"
         style="width: 250px"
+        option-value="Id"
+        option-label="Name"
+        option-disable="inactive"
+        emit-value
+        map-options
       >
         <template v-slot:no-option>
           <q-item>
@@ -30,14 +37,21 @@
       <q-item-label class="text-white q-mx-md text-bold">To</q-item-label>
       <q-select
         filled
-        class="bg-white q-ma-md input-date"
-        v-model="model"
+        v-model="to"
         use-input
+        hide-selected
+        fill-input
         input-debounce="0"
         label="To"
         :options="options"
         @filter="filterFn"
+        class="bg-white q-ma-md input-date"
         style="width: 250px"
+        option-value="Id"
+        option-label="Name"
+        option-disable="inactive"
+        emit-value
+        map-options
       >
         <template v-slot:no-option>
           <q-item>
@@ -49,48 +63,87 @@
       </q-select>
 
       <q-item-label class="text-white q-mx-md text-bold">Departure</q-item-label>
-      <q-input filled v-model="date" style="width: 250px" mask="date"
+      <q-input filled v-model="date" style="width: 250px"
                class="bg-white q-ma-md input-date">
         <template v-slot:append>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-              <q-date v-model="date" @input="() => $refs.qDateProxy.hide()"/>
+              <q-date v-model="date" mask="DD/MM/YYYY" :options="optionDate" @input="() => $refs.qDateProxy.hide()"/>
             </q-popup-proxy>
           </q-icon>
         </template>
       </q-input>
 
-      <q-btn icon="search" to="pick-seat" color="blue-9" class="btn-search q-mt-md" text-color="white" label="Search" />
+      <q-btn icon="search" @click="findTicket" color="blue-9" class="btn-search q-mt-md" text-color="white" label="Search"/>
 
     </div>
   </q-page>
 </template>
 
 <script>
-  import {exportFile} from "quasar";
-  import {mapState, mapActions} from 'vuex'
   import '../utils/filter'
   import {Constants} from 'src/utils/const'
-
-  const stringOptions = [
-    'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
-  ]
+  import moment from 'moment'
+  import {httpClient} from "src/api/http";
+  import {mapState, mapActions} from 'vuex'
 
   export default {
     data() {
       return {
-        model: null,
-        options: stringOptions,
-        date: '2019/02/01'
+        from: null,
+        to: null,
+        options: [],
+        stringOptions: [],
+        date: ''
       }
     },
-
+    mounted() {
+      this.loadStations();
+    },
+    computed: {
+    ...mapState('ticket', ['stations','startStation','endStation','departureDay','routes','seats'])
+    },
     methods: {
+      ...mapActions({
+        loadStations: 'ticket/loadAllStations',
+        loadRoutes: 'ticket/loadRoutes',
+        loadSeats: 'ticket/loadSeats'
+      }),
       filterFn(val, update, abort) {
-        update(() => {
-          const needle = val.toLowerCase()
-          this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        // call abort() at any time if you can't retrieve data somehow
+        setTimeout(() => {
+          update(() => {
+            if (val === '') {
+              this.options = this.stations
+            } else {
+              const needle = val.toLowerCase()
+              this.options = this.stations.filter(v => v.Name.toLowerCase().indexOf(needle) > -1)
+            }
+          })
+        }, 500)
+      },
+
+      optionDate(date) {
+        return date > moment().format("YYYY/MM/DD")
+      },
+
+      async findTicket(){
+        await this.loadRoutes({
+          departureDay: this.date,
+          params: {
+            startStation: this.from,
+            endStation: this.to
+          }
+        });
+        await this.loadSeats({
+          params: {
+            departureDay:this.date,
+            startTrainStation: this.from,
+            endTrainStation: this.to,
+            IdTrainCar: this.routes[0].TrainId
+          }
         })
+        await this.$router.push('pick-seat')
       }
     }
   }
@@ -104,7 +157,11 @@
     border-radius: 5px;
   }
 
-  .btn-search{
+  .btn-search {
     margin-left: 75px;
+  }
+
+  .q-virtual-scroll__content {
+    height: 300px;
   }
 </style>

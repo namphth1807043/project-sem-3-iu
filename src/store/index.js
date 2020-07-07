@@ -5,6 +5,7 @@ import station from './station'
 import train from './train'
 import object from './object'
 import order from './order'
+import ticket from './ticket'
 
 Vue.use(Vuex);
 
@@ -13,7 +14,8 @@ const store = new Vuex.Store({
     station,
     train,
     object,
-    order
+    order,
+    ticket
   }
 });
 
