@@ -57,19 +57,30 @@
             <q-td :props="props">
               <div class="text-blue-9">Locked for <span class="text-red-10">525</span> second(s)</div>
               <div>{{props.row.trainCode}} {{props.row.sourceName}} - {{props.row.destinationName}}</div>
-              <div>{{props.row.departureDay}} {{props.row.departureTime}}</div>
+              <div>{{props.row.departureDay}} {{props.row.departureTime | time}}</div>
               <div>Coach {{props.row.trainCarNumber}} seat {{props.row.seatNo}}</div>
               <div>{{props.row.trainCarType}}</div>
             </q-td>
           </template>
           <template v-slot:body-cell-discount="props">
-            <q-td :props="props">
-              0
+            <q-td :props="props" v-if="idObjects[props.row.index]">
+              {{ objectType(idObjects[props.row.index]) }} %
+            </q-td>
+            <q-td :props="props" v-else>
+              0%
             </q-td>
           </template>
           <template v-slot:body-cell-promotions="props">
             <q-td :props="props">
               No promotions for this ticket
+            </q-td>
+          </template>
+          <template v-slot:body-cell-cost="props">
+            <q-td :props="props" v-if="idObjects[props.row.index]">
+              {{ Math.round((props.row.price - props.row.price / 100 * objectType(idObjects[props.row.index]))*100)/100 }}
+            </q-td>
+            <q-td :props="props" v-else>
+              {{ props.row.price }}
             </q-td>
           </template>
         </q-table>
@@ -122,7 +133,7 @@
             <q-list bordered>
 
               <q-item v-ripple>
-                <q-radio v-model="radio" val="paypal"/>
+                <q-radio v-model="radio" val="2"/>
 
                 <div style="width: 10%">
                   <img width="100%" src="https://newsroom.mastercard.com/wp-content/uploads/2016/09/paypal-logo.png">
@@ -138,7 +149,7 @@
               <q-separator inset/>
 
               <q-item v-ripple>
-                <q-radio v-model="radio" val="money"/>
+                <q-radio v-model="radio" val="1"/>
 
                 <div style="width: 12%" class="q-pt-lg">
                   <img width="100%" src="https://dsvn.vn/images/logo-dvtt-PayLater.png">
@@ -189,7 +200,7 @@
           email: ''
         },
         data: [],
-        radio: null,
+        radio: '2',
         columns: [
           {
             name: "name",
@@ -228,12 +239,25 @@
         ]
       }
     },
-    watch: {},
+    watch: {
+      isSaving(val){
+        if (val === false){
+          this.$q.notify({
+            message: 'Submit order success. Have good day <3',
+            color: 'green'
+          })
+          this.$router.push('/')
+          this.$q.loading.hide()
+        }
+      }
+    },
     computed: {
       ...mapState('ticket', [
         'cart',
-        'objects'
-      ]),
+        'objects',
+        'isSaved',
+        'isSaving'
+      ])
     },
     created() {
       this.loadObjects()
@@ -249,20 +273,29 @@
         loadObjects: 'ticket/loadObjects',
         saveOrder: 'ticket/submitOrder',
       }),
+      objectType(id){
+        console.log(id)
+        for(let item of this.objects){
+          if(item.Id === id){
+            return item.PricePercent
+          }
+        }
+      },
       submitOrder() {
         this.$q.loading.show()
         let order = {
           tickets: [],
-          typePayment: 2,
+          typePayment: parseInt(this.radio),
           ...this.order
         }
         for (let i = 0; i < this.data.length; i++) {
+          let departureDay = this.data[i].departureDay.split("/").join("-");
           order.tickets.push({
             idSeat: this.data[i].idSeat,
             identityNumber: this.identityNumbers[i],
             name: this.names[i],
             idObject: this.idObjects[i],
-            departureDay: moment(this.data[i].departureDay).format('DD-MM-YYYY'),
+            departureDay: departureDay,
             idTrainCar: this.data[i].idTrainCar,
             idSource: this.data[i].idSource,
             idDestination: this.data[i].idDestination

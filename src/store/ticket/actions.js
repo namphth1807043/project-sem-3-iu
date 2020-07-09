@@ -127,7 +127,8 @@ export async function submitOrder({commit}, order) {
     let response =  await httpClient.post('/orders', order)
     commit('saveOrderSuccess', {
       response: response,
-      isSaved: true
+      isSaved: true,
+      typePayment: order.typePayment
     })
   } catch (error) {
     commit('saveOrderError', error)

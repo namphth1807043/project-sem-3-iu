@@ -120,10 +120,13 @@ export function saveOrderBegin (state) {
   state.isSaving = true
 }
 
-export function saveOrderSuccess (state, { isSaved, response }) {
+export function saveOrderSuccess (state, { isSaved, response, typePayment }) {
   state.isSaved = isSaved
   state.isSaving = false
-  window.location.href = response;
+  state.cart = []
+  if (typePayment === 2){
+    window.location.href = response;
+  }
 }
 
 export function saveOrderError (state, error) {

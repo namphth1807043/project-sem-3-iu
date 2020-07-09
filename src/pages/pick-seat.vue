@@ -32,94 +32,67 @@
           </div>
         </div>
         <div>
-          <div v-if="isLoadingTrainCar === false">
-            <div class="row q-pl-lg">
-              <div v-for="(item,index) in myTrainCars">
-                <div class="train-car bg-blue-3 q-mr-sm"
-                     @click="tranCarSelected = item.Id"
-                     :class="[
+          <div class="row q-pl-lg">
+            <div v-for="(item,index) in myTrainCars">
+              <div class="train-car bg-blue-3 q-mr-sm"
+                   @click="tranCarSelected = item.Id"
+                   :class="[
                {
                  'bg-blue-4': item.Id !== tranCarSelected,
                  'bg-green-5': item.Id === tranCarSelected
                }
               ]">
-                  <img src="../statics/trainCar.png" alt="">
-                  <div class="text-center">{{ item.IndexNumber + 1}}</div>
-                </div>
+                <img src="../statics/trainCar.png" alt="">
+                <div class="text-center">{{ item.IndexNumber}}</div>
               </div>
-              <div class="q-mr-sm">
-                <img src="../statics/train-head.png" alt="">
-                <div class="text-center">{{ trainCode }}</div>
-              </div>
-              <div class="flex-break q-py-md"></div>
             </div>
-            <div class="text-bold q-pt-lg q-pl-xl" style="color: #0382c1">
-              Coach number {{ trainCarNumber }}: {{ trainCarType }}
+            <div class="q-mr-sm">
+              <img src="../statics/train-head.png" alt="">
+              <div class="text-center">{{ trainCode }}</div>
             </div>
-            <div v-if="isLoadingSeat === false">
-              <div class="row seat-train-car q-pl-lg q-py-md q-ml-md q-my-lg"
-                   style="width: 1255px" v-if="$q.screen.gt.lg">
-                <div class="seat text-center"
-                     v-for="(item,index) in seats"
-                     @click="pickSeats(item)"
-                     style="width: 65px;"
-                     :class="{
+            <div class="flex-break q-py-md"></div>
+          </div>
+          <div class="text-bold q-pt-lg q-pl-xl" style="color: #0382c1">
+            Coach number {{ trainCarNumber }}: {{ trainCarType }}
+          </div>
+          <div class="row seat-train-car q-pl-lg q-py-md q-ml-md q-my-lg"
+               style="width: 1255px" v-if="$q.screen.gt.lg">
+            <div class="seat text-center"
+                 v-for="(item,index) in seats"
+                 @click="pickSeats(item)"
+                 style="width: 65px;"
+                 :class="[{
                  'bg-green-5 text-white': cart.some(i =>
                   i.idTrainCar === idTrainCar &&
                   i.idSeat === item.Id &&
-                  i.idTrain === idTrain)
-               }">
-                  {{ item.SeatNo }}
-                  <q-tooltip anchor="top middle" self="bottom middle" content-class="bg-indigo"
-                             content-style="font-size: 20px" :offset="[10, 10]">
-                    Price: {{ item.Price}} $
-                  </q-tooltip>
-                </div>
-              </div>
-              <div v-else>
-                <q-circular-progress
-                  indeterminate
-                  size="400px"
-                  color="lime"
-                  class="q-ma-md"
-                />
-              </div>
-            </div>
-            <div class="row seat-train-car q-pl-lg q-py-md q-ml-md q-my-lg" style="width: 950px" v-else>
-              <div class="seat text-center"
-                   v-if="isLoadingSeat === false"
-                   style="width: 47px;"
-                   v-for="(item,index) in seats"
-                   @click="pickSeats(item)"
-                   :class="{
-                 'bg-green-5 text-white': cart.some(i =>
-                  i.idTrainCar === idTrainCar &&
-                  i.idSeat === item.Id &&
-                  i.idTrain === idTrain)
-               }">
-                {{ item.SeatNo }}
-                <q-tooltip anchor="top middle" self="bottom middle" content-class="bg-indigo"
-                           content-style="font-size: 20px" :offset="[10, 10]">
-                  Price: {{ item.Price}} $
-                </q-tooltip>
-              </div>
-              <div v-else>
-                <q-circular-progress
-                  indeterminate
-                  size="50px"
-                  color="lime"
-                  class="q-ma-md"
-                />
-              </div>
+                  i.idTrain === idTrain),
+                  'bg-red-7 text-white': item.EmptySeat === false
+               }]">
+              {{ item.SeatNo }}
+              <q-tooltip anchor="top middle" self="bottom middle" content-class="bg-indigo"
+                         content-style="font-size: 20px" :offset="[10, 10]">
+                Price: {{ item.Price}} $
+              </q-tooltip>
             </div>
           </div>
-          <div v-else>
-            <q-circular-progress
-              indeterminate
-              size="50px"
-              color="lime"
-              class="q-ma-md"
-            />
+          <div class="row seat-train-car q-pl-lg q-py-md q-ml-md q-my-lg" style="width: 950px" v-else>
+            <div class="seat text-center"
+                 style="width: 47px;"
+                 v-for="(item,index) in seats"
+                 @click="pickSeats(item)"
+                 :class="[{
+                 'bg-green-5 text-white': cart.some(i =>
+                  i.idTrainCar === idTrainCar &&
+                  i.idSeat === item.Id &&
+                  i.idTrain === idTrain),
+                  'bg-red-7 text-white': item.EmptySeat === false
+               }]">
+              {{ item.SeatNo }}
+              <q-tooltip anchor="top middle" self="bottom middle" content-class="bg-indigo"
+                         content-style="font-size: 20px" :offset="[10, 10]">
+                Price: {{ item.Price}} $
+              </q-tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -316,39 +289,39 @@
       }),
 
       pickSeats(seat) {
-        let route = this.routes
-        let point = route[0].Points
-        let departureTime = 0;
-        for (let item of this.routes) {
-          if (item.TrainId === this.idTrain) {
-            departureTime = item.Points[0].ArrivalTime
+        if (seat.EmptySeat === true) {
+          let route = this.routes
+          let point = route[0].Points
+          let departureTime = 0;
+          for (let item of this.routes) {
+            if (item.TrainId === this.idTrain) {
+              departureTime = item.Points[0].ArrivalTime
 
+            }
           }
+          let cartItem = {
+            idSeat: seat.Id,
+            price: seat.Price,
+            seatNo: seat.SeatNo,
+            idTrainCar: this.idTrainCar,
+            idTrain: this.idTrain,
+            trainCarNumber: this.trainCarNumber,
+            trainCarType: this.trainCarType,
+            trainCode: this.trainCode,
+            departureDay: this.departureDay,
+            departureTime: departureTime,
+            idSource: point[0].IdStation,
+            idDestination: point[point.length - 1].IdStation,
+            sourceName: point[0].NameStation,
+            destinationName: point[point.length - 1].NameStation
+          }
+          this.updateCartItem(cartItem)
+        } else {
+          this.$q.notify({
+            message: 'Seat already reserved',
+            color: 'red'
+          })
         }
-        let cartItem = {
-          idSeat: seat.Id,
-          price: seat.Price,
-          seatNo: seat.SeatNo,
-          idTrainCar: this.idTrainCar,
-          idTrain: this.idTrain,
-          trainCarNumber: this.trainCarNumber,
-          trainCarType: this.trainCarType,
-          trainCode: this.trainCode,
-          departureDay: this.departureDay,
-          departureTime: departureTime,
-          idSource: point[0].IdStation,
-          idDestination: point[point.length - 1].IdStation,
-          sourceName: point[0].NameStation,
-          destinationName: point[point.length - 1].NameStation
-        }
-        // let rs = this.cart.some(item => item.idTrainCar === this.idTrainCar && item.idSeat === val)
-        // if (rs) {
-        //   this.removeCartItem(cartItem)
-        // } else {
-        //   this.addCartItem(cartItem)
-        // }
-        this.updateCartItem(cartItem)
-        console.log(this.cart)
       }
     }
   }
