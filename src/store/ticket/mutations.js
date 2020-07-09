@@ -40,7 +40,7 @@ export function fetchRoutesError(state, error) {
 export function fetchTrainCarsBegin(state) {
   state.trainCars = []
   state.error = null
-  state.isLoading = true
+  state.isLoadingTrainCar = true
 
 }
 
@@ -48,18 +48,18 @@ export function fetchTrainCarsSuccess(state, {trainCars, IdTrain}) {
   state.idTrain = IdTrain
   state.trainCars = trainCars
   state.error = null
-  state.isLoading = false
+  state.isLoadingTrainCar = false
 }
 
 export function fetchTrainCarsError(state, error) {
   state.error = error
-  state.isLoading = false
+  state.isLoadingTrainCar = false
 }
 
 export function fetchSeatsBegin(state) {
   state.seats = []
   state.error = null
-  state.isLoading = true
+  state.isLoadingSeat = true
 
 }
 
@@ -67,12 +67,12 @@ export function fetchSeatsSuccess(state, {seats, IdTrainCar}) {
   state.idTrainCar = IdTrainCar
   state.seats = seats
   state.error = null
-  state.isLoading = false
+  state.isLoadingSeat = false
 }
 
 export function fetchSeatsError(state, error) {
   state.error = error
-  state.isLoading = false
+  state.isLoadingSeat = false
 }
 
 export function updateCart(state, cartItem) {

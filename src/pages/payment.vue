@@ -169,6 +169,7 @@
 
 <script>
   import {mapActions, mapState} from "vuex";
+  import moment from 'moment'
 
   export default {
     data() {
@@ -249,10 +250,11 @@
         saveOrder: 'ticket/submitOrder',
       }),
       submitOrder() {
+        this.$q.loading.show()
         let order = {
           tickets: [],
           typePayment: 2,
-          ... this.order
+          ...this.order
         }
         for (let i = 0; i < this.data.length; i++) {
           order.tickets.push({
@@ -260,13 +262,12 @@
             identityNumber: this.identityNumbers[i],
             name: this.names[i],
             idObject: this.idObjects[i],
-            departureDay: this.data[i].departureDay,
+            departureDay: moment(this.data[i].departureDay).format('DD-MM-YYYY'),
             idTrainCar: this.data[i].idTrainCar,
             idSource: this.data[i].idSource,
-            idDestination:this.data[i].idDestination
+            idDestination: this.data[i].idDestination
           })
         }
-
         this.saveOrder(order)
       }
     }
