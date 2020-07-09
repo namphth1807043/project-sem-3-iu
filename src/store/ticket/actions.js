@@ -47,6 +47,31 @@ export async function loadRoutes({commit, dispatch}, {departureDay, params}) {
   }
 }
 
+export async function loadTrainCars({commit, dispatch}, {params}) {
+  commit('fetchTrainCarsBegin');
+
+  try {
+    const queryParams = new URLSearchParams({
+      ...params
+    }).toString()
+
+    const response = await httpClient.get(`/trainCars?${queryParams}`)
+    commit('fetchTrainCarsSuccess', {
+      ...params,
+      trainCars: response
+    })
+
+    if (response && response.length > 0) {
+      return response
+    } else {
+      return null
+    }
+  } catch (error) {
+    commit('fetchTrainCarsError', error)
+    return null
+  }
+}
+
 export async function loadSeats({commit, dispatch}, {params}) {
   commit('fetchSeatsBegin');
 
@@ -69,5 +94,42 @@ export async function loadSeats({commit, dispatch}, {params}) {
   } catch (error) {
     commit('fetchSeatsError', error)
     return null
+  }
+}
+
+export async function loadObjects({commit, dispatch}) {
+  commit('fetchObjectsBegin');
+
+  try {
+    const response = await httpClient.get(`/objectPassengers`)
+    commit('fetchObjectsSuccess', {
+      objects: response
+    })
+
+    if (response && response.length > 0) {
+      return response
+    } else {
+      return null
+    }
+  } catch (error) {
+    commit('fetchObjectsError', error)
+    return null
+  }
+}
+
+export async function updateCartItem({commit, dispatch}, cartItem) {
+    commit('updateCart', cartItem)
+}
+
+export async function submitOrder({commit}, order) {
+  commit('saveOrderBegin')
+  try {
+    let response =  await httpClient.post('/orders', order)
+    commit('saveOrderSuccess', {
+      response: response,
+      isSaved: true
+    })
+  } catch (error) {
+    commit('saveOrderError', error)
   }
 }

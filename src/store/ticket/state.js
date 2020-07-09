@@ -8,5 +8,10 @@ export default {
   seats: [],
   error: null,
   isLoading: false,
-  idTrainCar: null
+  idTrainCar: null,
+  idTrain: null,
+  cart: [],
+  objects: [],
+  isSaved: false,
+  isSaving: false,
 }

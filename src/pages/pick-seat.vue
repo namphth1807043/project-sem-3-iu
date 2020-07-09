@@ -22,127 +22,145 @@
               </q-chip>
               <div class="train-info">
                 <div class="">
-                  Departure <span class="text-bold">{{ departureDay.slice(0,-5) }} {{ item.TravelTime | time }}</span>
+                  Departure <span class="text-bold">{{ departureDay.slice(0,-5) }} {{ item.Points[0].ArrivalTime | time }}</span>
                 </div>
                 <div class="">
-                  Arrival &nbsp;<span class="float-right text-bold">11/07  {{ getArrivalTime(index) | time }}</span>
-                </div>
-                <div class="">
-                  Ordered <span class="float-right">Available</span>
-                </div>
-                <div class="text-bold">
-                  0 <span class="float-right">352</span>
+                  Arrival &nbsp;<span class="float-right text-bold">{{ departureDay.slice(0,-5) }} {{ item.TravelTime | time }}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="row q-pl-lg">
-          <div v-for="(item,index) in 7">
+          <div v-for="(item,index) in myTrainCars">
             <div class="train-car bg-blue-3 q-mr-sm"
-                 @click="tranCarSelected = index"
+                 @click="tranCarSelected = item.Id"
                  :class="[
                {
-                 'bg-blue-4': index !== tranCarSelected,
-                 'bg-green-5': index === tranCarSelected
+                 'bg-blue-4': item.Id !== tranCarSelected,
+                 'bg-green-5': item.Id === tranCarSelected
                }
               ]">
               <img src="../statics/trainCar.png" alt="">
-              <div class="text-center">{{ index }}</div>
+              <div class="text-center">{{ item.IndexNumber + 1}}</div>
             </div>
           </div>
           <div class="q-mr-sm">
             <img src="../statics/train-head.png" alt="">
-            <div class="text-center">LP2</div>
+            <div class="text-center">{{ trainCode }}</div>
           </div>
           <div class="flex-break q-py-md"></div>
         </div>
-        <div class="text-bold q-pt-lg" style="padding-left: 25%; color: #0382c1">Coach number 1: Soft seat,
-          air-conditioned
+        <div class="text-bold q-pt-lg q-pl-xl" style="color: #0382c1">
+          Coach number {{ trainCarNumber }}: {{ trainCarType }}
         </div>
-        <div class="row seat-train-car q-pl-lg q-py-md q-ml-md q-my-lg" style="width: 1255px">
+        <div class="row seat-train-car q-pl-lg q-py-md q-ml-md q-my-lg"
+             style="width: 1255px" v-if="$q.screen.gt.lg">
           <div class="seat text-center"
-               v-for="(item,index) in 64"
-               @click="seatSelected = index"
-               :class="{ 'bg-green-5 text-white': index === seatSelected }">
-            {{ index + 1}}
+               v-for="(item,index) in seats"
+               @click="pickSeats(item.Id)"
+               style="width: 65px;"
+               :class="{ 'bg-green-5 text-white': seatSelected.some(i => i.trainCarId === idTrainCar && i.seatId === item.Id) }">
+            {{ item.SeatNo }}
+            <q-tooltip content-class="bg-purple" content-style="font-size: 16px" :offset="[10, 10]">
+              Here I am!
+            </q-tooltip>
+          </div>
+        </div>
+        <div class="row seat-train-car q-pl-lg q-py-md q-ml-md q-my-lg" style="width: 950px">
+          <div class="seat text-center"
+               style="width: 47px;"
+               v-for="(item,index) in seats"
+               @click="pickSeats(item)"
+               :class="{
+                 'bg-green-5 text-white': cart.some(i =>
+                  i.idTrainCar === idTrainCar &&
+                  i.idSeat === item.Id &&
+                  i.idTrain === idTrain)
+               }">
+            {{ item.SeatNo }}
+            <q-tooltip anchor="top middle" self="bottom middle" content-class="bg-indigo"
+                       content-style="font-size: 20px" :offset="[10, 10]">
+              Price: {{ item.Price}} $
+            </q-tooltip>
           </div>
         </div>
       </div>
       <div class="col-3 cart">
-        <q-card bordered class="my-card">
-          <q-item>
-            <q-item-section side>
-              <q-icon name="shopping_cart" size="md" color="blue-9"/>
-            </q-item-section>
+        <!--        <q-card bordered class="my-card">-->
+        <!--          <q-item>-->
+        <!--            <q-item-section side>-->
+        <!--              <q-icon name="shopping_cart" size="md" color="blue-9"/>-->
+        <!--            </q-item-section>-->
 
-            <q-item-section class="text-bold text-blue-9">
-              Your cart
-            </q-item-section>
+        <!--            <q-item-section class="text-bold text-blue-9">-->
+        <!--              Your cart-->
+        <!--            </q-item-section>-->
 
-            <q-item-section side class="text-bold text-blue-9">
-              <q-btn to="payment" label="Buy ticket" color="blue-8"/>
-            </q-item-section>
-          </q-item>
+        <!--            <q-item-section side class="text-bold text-blue-9">-->
+        <!--              <q-btn to="payment" label="Buy ticket" color="blue-8"/>-->
+        <!--            </q-item-section>-->
+        <!--          </q-item>-->
 
-          <q-separator/>
+        <!--          <q-separator/>-->
 
-          <q-card-section>
-            <q-list>
+        <!--          <q-card-section>-->
+        <!--            <q-list>-->
 
-              <q-item>
-                <q-item-section>
-                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
-                  <q-item-label>11/07/2020 06:10</q-item-label>
-                  <q-item-label>NML coach 1 seat 56</q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
-                </q-item-section>
-              </q-item>
+        <!--              <q-item>-->
+        <!--                <q-item-section>-->
+        <!--                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>-->
+        <!--                  <q-item-label>11/07/2020 06:10</q-item-label>-->
+        <!--                  <q-item-label>NML coach 1 seat 56</q-item-label>-->
+        <!--                </q-item-section>-->
+        <!--                <q-item-section side>-->
+        <!--                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>-->
+        <!--                </q-item-section>-->
+        <!--              </q-item>-->
 
-              <q-separator inset=""/>
+        <!--              <q-separator inset=""/>-->
 
-              <q-item>
-                <q-item-section>
-                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
-                  <q-item-label>11/07/2020 06:10</q-item-label>
-                  <q-item-label>NML coach 1 seat 56</q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
-                </q-item-section>
-              </q-item>
+        <!--              <q-item>-->
+        <!--                <q-item-section>-->
+        <!--                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>-->
+        <!--                  <q-item-label>11/07/2020 06:10</q-item-label>-->
+        <!--                  <q-item-label>NML coach 1 seat 56</q-item-label>-->
+        <!--                </q-item-section>-->
+        <!--                <q-item-section side>-->
+        <!--                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>-->
+        <!--                </q-item-section>-->
+        <!--              </q-item>-->
 
-              <q-separator inset=""/>
+        <!--              <q-separator inset=""/>-->
 
-              <q-item>
-                <q-item-section>
-                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
-                  <q-item-label>11/07/2020 06:10</q-item-label>
-                  <q-item-label>NML coach 1 seat 56</q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
-                </q-item-section>
-              </q-item>
+        <!--              <q-item>-->
+        <!--                <q-item-section>-->
+        <!--                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>-->
+        <!--                  <q-item-label>11/07/2020 06:10</q-item-label>-->
+        <!--                  <q-item-label>NML coach 1 seat 56</q-item-label>-->
+        <!--                </q-item-section>-->
+        <!--                <q-item-section side>-->
+        <!--                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>-->
+        <!--                </q-item-section>-->
+        <!--              </q-item>-->
 
-              <q-separator inset=""/>
+        <!--              <q-separator inset=""/>-->
 
-              <q-item>
-                <q-item-section>
-                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
-                  <q-item-label>11/07/2020 06:10</q-item-label>
-                  <q-item-label>NML coach 1 seat 56</q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
-                </q-item-section>
-              </q-item>
+        <!--              <q-item>-->
+        <!--                <q-item-section>-->
+        <!--                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>-->
+        <!--                  <q-item-label>11/07/2020 06:10</q-item-label>-->
+        <!--                  <q-item-label>NML coach 1 seat 56</q-item-label>-->
+        <!--                </q-item-section>-->
+        <!--                <q-item-section side>-->
+        <!--                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>-->
+        <!--                </q-item-section>-->
+        <!--              </q-item>-->
 
-            </q-list>
-          </q-card-section>
-        </q-card>
+        <!--            </q-list>-->
+        <!--          </q-card-section>-->
+        <!--        </q-card>-->
+        <cart></cart>
       </div>
     </div>
     <div class="row q-pb-xl">
@@ -233,61 +251,139 @@
 <script>
   import '../utils/filter'
   import {mapActions, mapState} from "vuex";
-
-  const stringOptions = [
-    'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
-  ]
+  import Cart from '../pages/cart'
 
   export default {
+    components: {
+      Cart
+    },
     data() {
       return {
         model: null,
         trainSelected: undefined,
         tranCarSelected: undefined,
-        seatSelected: undefined,
-        options: stringOptions,
         date: '2019/02/01',
         trainClicked: false,
-        arrivalTime: []
+        arrivalTime: [],
+        myTrainCars: [],
+        trainCode: '',
+        trainCarNumber: null,
+        trainCarType: '',
       }
     },
-    mounted() {
-      this.getArrivalTime()
+    created() {
+      this.myTrainCars = this.trainCars.reverse()
+      this.trainSelected = this.idTrain
+      this.tranCarSelected = this.idTrainCar
+    },
+    watch: {
+      async trainSelected(val) {
+        await this.loadTrainCars({
+          params: {
+            IdTrain: val
+          }
+        })
+        await this.loadSeats({
+          params: {
+            departureDay: this.departureDay,
+            startStation: this.startStation,
+            endStation: this.endStation,
+            IdTrainCar: this.trainCars[0].Id
+          }
+        })
+        this.myTrainCars = this.trainCars.reverse()
+        this.tranCarSelected = this.idTrainCar
+        for (let item of this.routes) {
+          if (item.TrainId === this.idTrain) {
+            this.trainCode = item.TrainCode
+          }
+        }
+      },
+      async tranCarSelected(val) {
+        await this.loadSeats({
+          params: {
+            departureDay: this.departureDay,
+            startStation: this.startStation,
+            endStation: this.endStation,
+            IdTrainCar: val
+          }
+        })
+        this.tranCarSelected = this.idTrainCar
+        for (let item of this.trainCars) {
+          if (item.Id === this.idTrainCar) {
+            this.trainCarNumber = item.IndexNumber + 1
+            this.trainCarType = item.TrainCarType
+          }
+        }
+      }
     },
     computed: {
-      ...mapState('ticket', ['stations', 'startStation', 'endStation', 'departureDay', 'routes']),
+      ...mapState('ticket', [
+        'stations',
+        'startStation',
+        'endStation',
+        'departureDay',
+        'routes',
+        'isLoading',
+        'seats',
+        'idTrainCar',
+        'trainCars',
+        'idTrain',
+        'cart'
+      ]),
       startStationName() {
         let points = this.routes
         return points[0].Points[0].NameStation
       },
       endStationName() {
-        let points = this.routes
-        return points[0].Points[points.length - 1].NameStation
+        let route = this.routes
+        let point = route[0].Points
+        return point[point.length - 1].NameStation
       }
     },
     methods: {
       ...mapActions({
-        loadStations: 'ticket/loadAllStations',
-        loadRoutes: 'ticket/loadRoutes',
-        loadSeats: 'ticket/loadSeats'
+        loadTrainCars: 'ticket/loadTrainCars',
+        loadSeats: 'ticket/loadSeats',
+        // addCartItem: 'ticket/addCartItem',
+        // removeCartItem: 'ticket/removeCartItem',
+        updateCartItem: 'ticket/updateCartItem'
       }),
-      filterFn(val, update, abort) {
-        update(() => {
-          const needle = val.toLowerCase()
-          this.options = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
-        })
-      },
-      getArrivalTime(index) {
-        console.log(this.routes)
-        if (index !== undefined){
-          let rs = this.routes
-          let route = rs[index]
-          let arrivalTime = route.TravelTime
-          for (let item of route.Points) {
-            arrivalTime += item.ArrivalTime
+
+      pickSeats(seat) {
+        let route = this.routes
+        let point = route[0].Points
+        let departureTime = 0;
+        for (let item of this.routes) {
+          if (item.TrainId === this.idTrain) {
+            departureTime = item.Points[0].ArrivalTime
+
           }
-          return arrivalTime
         }
+        let cartItem = {
+          idSeat: seat.Id,
+          price: seat.Price,
+          seatNo: seat.SeatNo,
+          idTrainCar: this.idTrainCar,
+          idTrain: this.idTrain,
+          trainCarNumber: this.trainCarNumber,
+          trainCarType: this.trainCarType,
+          trainCode: this.trainCode,
+          departureDay: this.departureDay,
+          departureTime: departureTime,
+          idSource: point[0].IdStation,
+          idDestination: point[point.length - 1].IdStation,
+          sourceName: point[0].NameStation,
+          destinationName: point[point.length - 1].NameStation
+        }
+        // let rs = this.cart.some(item => item.idTrainCar === this.idTrainCar && item.idSeat === val)
+        // if (rs) {
+        //   this.removeCartItem(cartItem)
+        // } else {
+        //   this.addCartItem(cartItem)
+        // }
+        this.updateCartItem(cartItem)
+        console.log(this.cart)
       }
     }
   }
@@ -327,7 +423,7 @@
 
   .train-info {
     position: absolute;
-    top: 11%;
+    top: 17%;
     left: 15%;
   }
 
@@ -345,7 +441,6 @@
   .seat {
     border: solid 2px black;
     cursor: pointer;
-    width: 65px;
     margin: 5px;
     border-radius: 5px;
   }

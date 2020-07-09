@@ -37,18 +37,34 @@ export function fetchRoutesError(state, error) {
   state.isLoading = false
 }
 
-export function fetchSeatsBegin(state) {
-  state.routes = []
+export function fetchTrainCarsBegin(state) {
+  state.trainCars = []
   state.error = null
   state.isLoading = true
 
 }
 
-export function fetchSeatsSuccess(state, {idTrainCar, startStation, endStation, departureDay, seats}) {
-  state.departureDay = departureDay
-  state.startStation = startStation
-  state.endStation = endStation
-  state.idTrainCar = idTrainCar
+export function fetchTrainCarsSuccess(state, {trainCars, IdTrain}) {
+  state.idTrain = IdTrain
+  state.trainCars = trainCars
+  state.error = null
+  state.isLoading = false
+}
+
+export function fetchTrainCarsError(state, error) {
+  state.error = error
+  state.isLoading = false
+}
+
+export function fetchSeatsBegin(state) {
+  state.seats = []
+  state.error = null
+  state.isLoading = true
+
+}
+
+export function fetchSeatsSuccess(state, {seats, IdTrainCar}) {
+  state.idTrainCar = IdTrainCar
   state.seats = seats
   state.error = null
   state.isLoading = false
@@ -58,3 +74,61 @@ export function fetchSeatsError(state, error) {
   state.error = error
   state.isLoading = false
 }
+
+export function updateCart(state, cartItem) {
+  let rs = state.cart.some(
+    item =>
+      item.idTrainCar === cartItem.idTrainCar &&
+      item.idSeat === cartItem.idSeat &&
+      item.idTrain === cartItem.idTrain
+  )
+  if (rs){
+    state.cart.splice(
+      state.cart.findIndex(
+        x =>
+          x.idTrainCar === cartItem.idTrainCar &&
+          x.idSeat === cartItem.idSeat &&
+          x.idTrain === cartItem.idTrain
+      ), 1)
+  }else {
+    state.cart.push(cartItem)
+  }
+
+}
+
+export function fetchObjectsBegin(state) {
+  state.objects = []
+  state.error = null
+  state.isLoading = true
+
+}
+
+export function fetchObjectsSuccess(state, {objects}) {
+  state.objects = objects
+  state.error = null
+  state.isLoading = false
+}
+
+export function fetchObjectsError(state, error) {
+  state.error = error
+  state.isLoading = false
+}
+
+export function saveOrderBegin (state) {
+  state.error = null
+  state.isSaved = false
+  state.isSaving = true
+}
+
+export function saveOrderSuccess (state, { isSaved, response }) {
+  state.isSaved = isSaved
+  state.isSaving = false
+  window.location.href = response;
+}
+
+export function saveOrderError (state, error) {
+  state.error = error
+  state.isSaved = false
+  state.isSaving = false
+}
+

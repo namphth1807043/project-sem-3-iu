@@ -5,7 +5,11 @@
       <q-toolbar class="toolbar">
         <q-toolbar-title class="q-pt-sm">
           <router-link to="/">
-            <div style="width: 20%">
+            <div style="width: 20%" v-if="$q.screen.gt.lg">
+              <img style="border-radius: 10px;width: 100%"
+                   src="../statics/logo.png" alt=""/>
+            </div>
+            <div style="width: 30%" v-else>
               <img style="border-radius: 10px;width: 100%"
                    src="../statics/logo.png" alt=""/>
             </div>
@@ -13,7 +17,8 @@
         </q-toolbar-title>
 
         <q-btn-group class="q-mr-xs" unelevated>
-          <a href="/" class="header__icon-link">
+
+          <router-link to="/" class="header__icon-link">
             <q-btn
               class="header__list-icon"
               :ripple="false"
@@ -22,7 +27,8 @@
               <span class="header__icon"><q-icon name="search" color="blue-10"></q-icon></span>
               <div class="header__icon-text">Find ticket</div>
             </q-btn>
-          </a>
+          </router-link>
+
           <a href="/" class="header__icon-link">
             <q-btn
               class="header__list-icon"
@@ -78,79 +84,7 @@
     </q-header>
 
     <q-dialog v-model="cart">
-      <q-card bordered style="width: 700px; max-width: 80vw;">
-        <q-item>
-          <q-item-section side>
-            <q-icon name="shopping_cart" size="md" color="blue-9"/>
-          </q-item-section>
-
-          <q-item-section class="text-bold text-blue-9">
-            Your cart
-          </q-item-section>
-
-          <q-item-section side class="text-bold text-blue-9">
-            <q-btn to="payment" label="Buy ticket" color="blue-8"/>
-          </q-item-section>
-        </q-item>
-
-        <q-separator/>
-
-        <q-card-section>
-          <q-list>
-
-            <q-item>
-              <q-item-section>
-                <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
-                <q-item-label>11/07/2020 06:10</q-item-label>
-                <q-item-label>NML coach 1 seat 56</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
-              </q-item-section>
-            </q-item>
-
-            <q-separator inset=""/>
-
-            <q-item>
-              <q-item-section>
-                <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
-                <q-item-label>11/07/2020 06:10</q-item-label>
-                <q-item-label>NML coach 1 seat 56</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
-              </q-item-section>
-            </q-item>
-
-            <q-separator inset=""/>
-
-            <q-item>
-              <q-item-section>
-                <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
-                <q-item-label>11/07/2020 06:10</q-item-label>
-                <q-item-label>NML coach 1 seat 56</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
-              </q-item-section>
-            </q-item>
-
-            <q-separator inset=""/>
-
-            <q-item>
-              <q-item-section>
-                <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>
-                <q-item-label>11/07/2020 06:10</q-item-label>
-                <q-item-label>NML coach 1 seat 56</q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>
-              </q-item-section>
-            </q-item>
-
-          </q-list>
-        </q-card-section>
-      </q-card>
+      <cart></cart>
     </q-dialog>
 
     <q-page-container>
@@ -169,10 +103,15 @@
 </template>
 
 <script>
+  import Cart from '../pages/cart'
+
   export default {
+    components: {
+      Cart
+    },
     data() {
       return {
-        cart : false,
+        cart: false,
         left: false,
         fab2: false,
         hideLabels: false

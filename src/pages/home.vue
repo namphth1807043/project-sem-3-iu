@@ -74,7 +74,8 @@
         </template>
       </q-input>
 
-      <q-btn icon="search" @click="findTicket" color="blue-9" class="btn-search q-mt-md" text-color="white" label="Search"/>
+      <q-btn icon="search" @click="findTicket" color="blue-9" class="btn-search q-mt-md" text-color="white"
+             label="Search"/>
 
     </div>
   </q-page>
@@ -93,7 +94,6 @@
         from: null,
         to: null,
         options: [],
-        stringOptions: [],
         date: ''
       }
     },
@@ -101,13 +101,14 @@
       this.loadStations();
     },
     computed: {
-    ...mapState('ticket', ['stations','startStation','endStation','departureDay','routes','seats'])
+      ...mapState('ticket', ['stations', 'startStation', 'endStation', 'departureDay', 'routes', 'seats','trainCars'])
     },
     methods: {
       ...mapActions({
         loadStations: 'ticket/loadAllStations',
         loadRoutes: 'ticket/loadRoutes',
-        loadSeats: 'ticket/loadSeats'
+        loadSeats: 'ticket/loadSeats',
+        loadTrainCars: 'ticket/loadTrainCars'
       }),
       filterFn(val, update, abort) {
         // call abort() at any time if you can't retrieve data somehow
@@ -127,23 +128,28 @@
         return date > moment().format("YYYY/MM/DD")
       },
 
-      async findTicket(){
-        await this.loadRoutes({
+     async findTicket(){
+       await this.loadRoutes({
           departureDay: this.date,
           params: {
             startStation: this.from,
             endStation: this.to
           }
         });
-        await this.loadSeats({
-          params: {
-            departureDay:this.date,
-            startTrainStation: this.from,
-            endTrainStation: this.to,
-            IdTrainCar: this.routes[0].TrainId
-          }
-        })
-        await this.$router.push('pick-seat')
+       await this.loadTrainCars({
+         params: {
+           IdTrain: this.routes[0].TrainId
+         }
+       })
+       await this.loadSeats({
+         params: {
+           departureDay: this.departureDay,
+           startStation: this.startStation,
+           endStation: this.endStation,
+           IdTrainCar: this.trainCars[0].Id
+         }
+       })
+       await this.$router.push('pick-seat')
       }
     }
   }
@@ -162,6 +168,6 @@
   }
 
   .q-virtual-scroll__content {
-    height: 300px;
+    max-height: 300px;
   }
 </style>
