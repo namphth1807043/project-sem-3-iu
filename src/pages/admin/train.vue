@@ -122,28 +122,28 @@ export default {
           name: "id",
           align: "left",
           label: "ID",
-          field: "id",
+          field: "Id",
           sortable: true
         },
         {
           name: "code",
           align: "left",
           label: "Code",
-          field: "code",
+          field: "Code",
           sortable: true
         },
         {
           name: "createdAt",
           align: "left",
           label: "Created at",
-          field: "createdAt",
+          field: "CreatedAt",
           sortable: true
         },
         {
           name: "updatedAt",
           align: "left",
           label: "Updated at",
-          field: "updatedAt",
+          field: "UpdatedAt",
           sortable: true
         },
         {

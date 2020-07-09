@@ -12,14 +12,6 @@
       :loading="isLoading"
     >
       <template v-slot:top="props">
-        <q-input
-          class="q-pr-sm"
-          outlined
-          dense
-          debounce="300"
-          v-model="filter.code"
-          label="Ticket code">
-        </q-input>
 
         <q-input
           class="q-pr-sm"
@@ -49,18 +41,18 @@
           label="Customer email">
         </q-input>
 
-        <div class="q-ma-sm" style="width: 200px;">
+        <div class="q-ma-sm" style="width: 300px;">
           <q-badge color="secondary" v-if="priceRange.min > 0">
-            Price: {{ priceRange.min | formatInteger}} to {{ priceRange.max | formatInteger}} (0 to 10,000,000 VND)
+            Price: {{ priceRange.min }} to {{ priceRange.max }} ($)
           </q-badge>
           <q-badge color="secondary" v-else>
-            Price: 0 to {{ priceRange.max | formatInteger}} (0 to 10,000,000 VND)
+            Price: {{ priceRange.min }} to {{ priceRange.max }} ($)
           </q-badge>
 
           <q-range
             v-model="priceRange"
             :min="0"
-            :max="10000000"
+            :max="1000"
             @change="price"
           />
         </div>
@@ -139,7 +131,7 @@
       </template>
       <template v-slot:body-cell-total_price="props">
         <q-td :props="props">
-          {{ props.row.TotalPrice | formatInteger }}
+          {{ props.row.TotalPrice }}
         </q-td>
       </template>
       <template v-slot:body-cell-created_at="props">
@@ -231,7 +223,7 @@
         orderId: null,
         priceRange: {
           min: 0,
-          max: 10000000
+          max: 1000
         },
         isLoadOrderDetail: false,
         dateRange: {},
@@ -269,7 +261,7 @@
           {
             name: "total_price",
             align: "left",
-            label: "Total Price (VND)",
+            label: "Total Price ($)",
             field: "TotalPrice"
           },
           {

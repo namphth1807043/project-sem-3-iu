@@ -1,5 +1,5 @@
 import { httpClient } from "src/api/http";
-const API_URL = "https://5eaf78cd0605ed0016d2c9a1.mockapi.io/api/tv/train";
+const API_URL = "http://undifinedtrain.azurewebsites.net/api/trains";
 const state = {};
 
 const getters = {};

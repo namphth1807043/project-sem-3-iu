@@ -13,25 +13,11 @@
       :loading="isLoading"
     >
       <template v-slot:top-right="props">
-        <q-item>
-          <date-range-picker
-          ref="picker"
-          :showWeekNumbers="true"
-          :showDropdowns="true"
-          :autoApply="false"
-          v-model="dateRange"
-        >
-          <template v-slot:input="picker" style="min-width: 350px;">
-            {{ picker.startDate }} - {{ picker.endDate }}
-          </template>
-        </date-range-picker>
-        </q-item>
-
         <q-input
-                 dense
-                 debounce="300"
-                 v-model="filter.name"
-                 placeholder="Name">
+          dense
+          debounce="300"
+          v-model="filter.name"
+          placeholder="Name">
         </q-input>
 
         <q-btn
@@ -61,6 +47,19 @@
       <template v-slot:body-cell-index="props">
         <q-td :props="props">
           {{ index(props.row.Id) }}
+        </q-td>
+      </template>
+      <template v-slot:body-cell-created_at="props">
+        <q-td :props="props">
+          {{ props.row.CreatedAt | filterDateTime }}
+        </q-td>
+      </template>
+      <template v-slot:body-cell-updated_at="props">
+        <q-td :props="props" v-if="props.row.UpdatedAt">
+          {{ props.row.UpdatedAt | filterDateTime }}
+        </q-td>
+        <q-td :props="props" v-else>
+          Chưa cập nhật
         </q-td>
       </template>
       <template v-slot:body-cell-status="props">

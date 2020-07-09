@@ -131,35 +131,21 @@ export default {
           name: "id",
           align: "left",
           label: "ID",
-          field: "id",
+          field: "Id",
           sortable: true
         },
         {
           name: "name",
           align: "left",
           label: "Name",
-          field: "name",
+          field: "Name",
           sortable: true
         },
         {
           name: "pricePercent",
           align: "left",
           label: "Price percent",
-          field: "pricePercent",
-          sortable: true
-        },
-        {
-          name: "createdAt",
-          align: "left",
-          label: "Created at",
-          field: "createdAt",
-          sortable: true
-        },
-        {
-          name: "updatedAt",
-          align: "left",
-          label: "Updated at",
-          field: "updatedAt",
+          field: "PricePercent",
           sortable: true
         },
         {
