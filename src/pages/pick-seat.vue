@@ -60,7 +60,12 @@
                v-for="(item,index) in seats"
                @click="pickSeats(item.Id)"
                style="width: 65px;"
-               :class="{ 'bg-green-5 text-white': seatSelected.some(i => i.trainCarId === idTrainCar && i.seatId === item.Id) }">
+               :class="{
+                 'bg-green-5 text-white': cart.some(i =>
+                  i.idTrainCar === idTrainCar &&
+                  i.idSeat === item.Id &&
+                  i.idTrain === idTrain)
+               }">>
             {{ item.SeatNo }}
             <q-tooltip content-class="bg-purple" content-style="font-size: 16px" :offset="[10, 10]">
               Here I am!
@@ -87,79 +92,6 @@
         </div>
       </div>
       <div class="col-3 cart">
-        <!--        <q-card bordered class="my-card">-->
-        <!--          <q-item>-->
-        <!--            <q-item-section side>-->
-        <!--              <q-icon name="shopping_cart" size="md" color="blue-9"/>-->
-        <!--            </q-item-section>-->
-
-        <!--            <q-item-section class="text-bold text-blue-9">-->
-        <!--              Your cart-->
-        <!--            </q-item-section>-->
-
-        <!--            <q-item-section side class="text-bold text-blue-9">-->
-        <!--              <q-btn to="payment" label="Buy ticket" color="blue-8"/>-->
-        <!--            </q-item-section>-->
-        <!--          </q-item>-->
-
-        <!--          <q-separator/>-->
-
-        <!--          <q-card-section>-->
-        <!--            <q-list>-->
-
-        <!--              <q-item>-->
-        <!--                <q-item-section>-->
-        <!--                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>-->
-        <!--                  <q-item-label>11/07/2020 06:10</q-item-label>-->
-        <!--                  <q-item-label>NML coach 1 seat 56</q-item-label>-->
-        <!--                </q-item-section>-->
-        <!--                <q-item-section side>-->
-        <!--                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>-->
-        <!--                </q-item-section>-->
-        <!--              </q-item>-->
-
-        <!--              <q-separator inset=""/>-->
-
-        <!--              <q-item>-->
-        <!--                <q-item-section>-->
-        <!--                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>-->
-        <!--                  <q-item-label>11/07/2020 06:10</q-item-label>-->
-        <!--                  <q-item-label>NML coach 1 seat 56</q-item-label>-->
-        <!--                </q-item-section>-->
-        <!--                <q-item-section side>-->
-        <!--                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>-->
-        <!--                </q-item-section>-->
-        <!--              </q-item>-->
-
-        <!--              <q-separator inset=""/>-->
-
-        <!--              <q-item>-->
-        <!--                <q-item-section>-->
-        <!--                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>-->
-        <!--                  <q-item-label>11/07/2020 06:10</q-item-label>-->
-        <!--                  <q-item-label>NML coach 1 seat 56</q-item-label>-->
-        <!--                </q-item-section>-->
-        <!--                <q-item-section side>-->
-        <!--                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>-->
-        <!--                </q-item-section>-->
-        <!--              </q-item>-->
-
-        <!--              <q-separator inset=""/>-->
-
-        <!--              <q-item>-->
-        <!--                <q-item-section>-->
-        <!--                  <q-item-label>LP2 Hải Phòng-Hà Nội</q-item-label>-->
-        <!--                  <q-item-label>11/07/2020 06:10</q-item-label>-->
-        <!--                  <q-item-label>NML coach 1 seat 56</q-item-label>-->
-        <!--                </q-item-section>-->
-        <!--                <q-item-section side>-->
-        <!--                  <q-btn dense flat unelevated icon="delete_outline" color="blue-10" size="lg"/>-->
-        <!--                </q-item-section>-->
-        <!--              </q-item>-->
-
-        <!--            </q-list>-->
-        <!--          </q-card-section>-->
-        <!--        </q-card>-->
         <cart></cart>
       </div>
     </div>
