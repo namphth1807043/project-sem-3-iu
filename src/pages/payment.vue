@@ -289,13 +289,12 @@
           ...this.order
         }
         for (let i = 0; i < this.data.length; i++) {
-          let departureDay = this.data[i].departureDay.split("/").join("-");
           order.tickets.push({
             idSeat: this.data[i].idSeat,
             identityNumber: this.identityNumbers[i],
             name: this.names[i],
             idObject: this.idObjects[i],
-            departureDay: departureDay,
+            departureDay: this.data[i].departureDay,
             idTrainCar: this.data[i].idTrainCar,
             idSource: this.data[i].idSource,
             idDestination: this.data[i].idDestination

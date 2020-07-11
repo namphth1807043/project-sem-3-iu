@@ -1,3 +1,7 @@
+import moment from 'moment'
+
+import firebase from 'src/api/firebase';
+const db = firebase.firestore()
 export function fetchAllStationsBegin(state) {
   state.stations = []
   state.error = null
@@ -76,13 +80,14 @@ export function fetchSeatsError(state, error) {
 }
 
 export function updateCart(state, cartItem) {
+  let id = `${cartItem.idTrainCar}-${cartItem.idSeat}-${cartItem.departureDay}`
   let rs = state.cart.some(
     item =>
       item.idTrainCar === cartItem.idTrainCar &&
       item.idSeat === cartItem.idSeat &&
       item.idTrain === cartItem.idTrain
   )
-  if (rs){
+  if (rs) {
     state.cart.splice(
       state.cart.findIndex(
         x =>
@@ -90,8 +95,29 @@ export function updateCart(state, cartItem) {
           x.idSeat === cartItem.idSeat &&
           x.idTrain === cartItem.idTrain
       ), 1)
-  }else {
+    db.collection("chosen-seats").doc(id).delete().then(function() {
+      console.log("Document successfully deleted!");
+    }).catch(function(error) {
+      console.error("Error removing document: ", error);
+    });
+  } else {
     state.cart.push(cartItem)
+    db.collection("chosen-seats")
+      .doc(id)
+      .set({
+        departureDay: cartItem.departureDay,
+        idSeat: cartItem.idSeat,
+        idTrainCar: cartItem.idTrainCar,
+        startIndex: cartItem.startIndex,
+        endIndex: cartItem.endIndex,
+        expiredAt: firebase.firestore.Timestamp.fromDate(moment().add(10, 'minutes').toDate())
+      })
+      .then(function () {
+        console.log("Success");
+      })
+      .catch(function (error) {
+        console.error("Error adding document: ", error);
+      });
   }
 
 }
@@ -114,22 +140,22 @@ export function fetchObjectsError(state, error) {
   state.isLoading = false
 }
 
-export function saveOrderBegin (state) {
+export function saveOrderBegin(state) {
   state.error = null
   state.isSaved = false
   state.isSaving = true
 }
 
-export function saveOrderSuccess (state, { isSaved, response, typePayment }) {
+export function saveOrderSuccess(state, {isSaved, response, typePayment}) {
   state.isSaved = isSaved
   state.isSaving = false
   state.cart = []
-  if (typePayment === 2){
+  if (typePayment === 2) {
     window.location.href = response;
   }
 }
 
-export function saveOrderError (state, error) {
+export function saveOrderError(state, error) {
   state.error = error
   state.isSaved = false
   state.isSaving = false
