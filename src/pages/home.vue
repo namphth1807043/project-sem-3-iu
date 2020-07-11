@@ -162,7 +162,7 @@
        })
        await this.loadSeats({
          params: {
-           departureDay: this.departureDay,
+           departureDay: this.departureDay.split("/").join("-"),
            startStation: this.startStation,
            endStation: this.endStation,
            IdTrainCar: this.trainCars[0].Id
