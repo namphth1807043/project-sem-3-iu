@@ -55,7 +55,7 @@
           </template>
           <template v-slot:body-cell-code="props">
             <q-td :props="props">
-              <div class="text-blue-9">Locked for <span class="text-red-10">525</span> second(s)</div>
+              <div class="text-blue-9">Locked for <span class="text-red-10">{{ props.row.countDown }}</span> second(s)</div>
               <div>{{props.row.trainCode}} {{props.row.sourceName}} - {{props.row.destinationName}}</div>
               <div>{{props.row.departureDay}} {{props.row.departureTime | time}}</div>
               <div>Coach {{props.row.trainCarNumber}} seat {{props.row.seatNo}}</div>

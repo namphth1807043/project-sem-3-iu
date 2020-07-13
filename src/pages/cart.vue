@@ -10,7 +10,7 @@
       </q-item-section>
 
       <q-item-section side class="text-bold text-blue-9">
-        <q-btn to="payment" label="Buy ticket" color="blue-8"/>
+        <q-btn to="payment" @click="payment" label="Buy ticket" color="blue-8"/>
       </q-item-section>
     </q-item>
 
@@ -59,6 +59,8 @@
         // console.log(val)
       }
     },
+    created() {
+    },
     mounted() {
     },
     computed: {
@@ -79,7 +81,9 @@
           i.idSeat === item.idSeat &&
           i.departureDay === item.departureDay
         )
-       return rs.countDown
+        if (rs){
+          return rs.countDown
+        }
       },
       countDownTimer() {
         for (let item of this.countDowns) {
@@ -88,6 +92,22 @@
               item.countDown -= 1
               this.countDownTimer()
             }, 1000)
+          }
+        }
+      },
+      payment(){
+        for(let item of this.cart){
+          let rs = this.countDowns.find(i =>
+            i.idTrainCar === item.idTrainCar &&
+            i.idSeat === item.idSeat &&
+            i.departureDay === item.departureDay
+          )
+          if (rs){
+            let newItem = {
+              ...item,
+              countDown: rs.countDown
+            }
+            this.updateCartItem(newItem)
           }
         }
       }

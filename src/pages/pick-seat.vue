@@ -95,7 +95,8 @@
                   i.idTrain === idTrain),
                   'bg-yellow-9 text-white': chosenSeats.some(i =>
                   i.idTrainCar === idTrainCar &&
-                  i.idSeat === item.Id ) &&
+                  i.idSeat === item.Id &&
+                  i.departureDay === departureDay.split('/').join('-')) &&
                   cart.some(i =>
                   i.idTrainCar === idTrainCar &&
                   i.idSeat === item.Id &&
@@ -229,9 +230,14 @@
       }
     },
     created() {
-      this.myTrainCars = this.trainCars.reverse()
-      this.trainSelected = this.idTrain
-      this.tranCarSelected = this.idTrainCar
+      if (this.idTrain && this.idTrainCar){
+        this.myTrainCars = this.trainCars.reverse()
+        this.trainSelected = this.idTrain
+        this.tranCarSelected = this.idTrainCar
+      }
+      else {
+        this.$router.push('/')
+      }
       db.collection('chosen-seats').onSnapshot(ref => {
         ref.docChanges().forEach(change => {
           const {newIndex, oldIndex, doc, type} = change
@@ -250,27 +256,31 @@
     },
     watch: {
       async trainSelected(val) {
-        await this.loadTrainCars({
-          params: {
-            IdTrain: val
+        if (val){
+          await this.loadTrainCars({
+            params: {
+              IdTrain: val
+            }
+          })
+          await this.loadSeats({
+            params: {
+              departureDay: this.departureDay.split("/").join("-"),
+              startStation: this.startStation,
+              endStation: this.endStation,
+              IdTrainCar: this.trainCars[0].Id
+            }
+          })
+          this.myTrainCars = this.trainCars.reverse()
+          this.tranCarSelected = this.idTrainCar
+          for (let item of this.routes) {
+            if (item.TrainId === this.idTrain) {
+              this.trainCode = item.TrainCode
+              this.startIndex = item.StartIndex
+              this.endIndex = item.EndIndex
+            }
           }
-        })
-        await this.loadSeats({
-          params: {
-            departureDay: this.departureDay.split("/").join("-"),
-            startStation: this.startStation,
-            endStation: this.endStation,
-            IdTrainCar: this.trainCars[0].Id
-          }
-        })
-        this.myTrainCars = this.trainCars.reverse()
-        this.tranCarSelected = this.idTrainCar
-        for (let item of this.routes) {
-          if (item.TrainId === this.idTrain) {
-            this.trainCode = item.TrainCode
-            this.startIndex = item.StartIndex
-            this.endIndex = item.EndIndex
-          }
+        }else {
+          await this.$router.push('')
         }
       },
       async tranCarSelected(val) {
@@ -396,7 +406,7 @@
               idSeat: seat.Id,
               idTrainCar: this.idTrainCar,
               departureDay: this.departureDay.split("/").join("-"),
-              countDown: 5
+              countDown: 10
             }
             this.countDowns.push(countDown)
             this.countDownTimer(cartItem)
