@@ -26,6 +26,7 @@
               <q-item-label>{{item.trainCarType}} coach {{item.trainCarNumber}} seat {{item.seatNo}}</q-item-label>
             </q-item-section>
             <q-item-section side>
+              <div class="q-pr-md text-red-9">{{ countDown(item) }}</div>
               <q-btn dense
                      flat
                      unelevated
@@ -49,23 +50,46 @@
   import {mapActions, mapState} from "vuex";
 
   export default {
+    props: ['countDowns'],
     data() {
       return {}
     },
+    watch: {
+      countDowns(val) {
+        // console.log(val)
+      }
+    },
     mounted() {
     },
-    watch: {},
     computed: {
       ...mapState('ticket', [
         'cart'
-      ]),
+      ])
     },
     methods: {
       ...mapActions({
         updateCartItem: 'ticket/updateCartItem'
       }),
-      delCartItem(cartItem){
+      delCartItem(cartItem) {
         this.updateCartItem(cartItem)
+      },
+      countDown(item) {
+        let rs = this.countDowns.find(i =>
+          i.idTrainCar === item.idTrainCar &&
+          i.idSeat === item.idSeat &&
+          i.departureDay === item.departureDay
+        )
+       return rs.countDown
+      },
+      countDownTimer() {
+        for (let item of this.countDowns) {
+          if (item.countDown > 0) {
+            setTimeout(() => {
+              item.countDown -= 1
+              this.countDownTimer()
+            }, 1000)
+          }
+        }
       }
     }
   }

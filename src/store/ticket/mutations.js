@@ -96,7 +96,6 @@ export function updateCart(state, cartItem) {
           x.idTrain === cartItem.idTrain
       ), 1)
     db.collection("chosen-seats").doc(id).delete().then(function() {
-      console.log("Document successfully deleted!");
     }).catch(function(error) {
       console.error("Error removing document: ", error);
     });
@@ -113,7 +112,6 @@ export function updateCart(state, cartItem) {
         expiredAt: firebase.firestore.Timestamp.fromDate(moment().add(10, 'minutes').toDate())
       })
       .then(function () {
-        console.log("Success");
       })
       .catch(function (error) {
         console.error("Error adding document: ", error);

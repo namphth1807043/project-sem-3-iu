@@ -68,7 +68,8 @@
                   i.idTrain === idTrain),
                   'bg-yellow-9 text-white': chosenSeats.some(i =>
                   i.idTrainCar === idTrainCar &&
-                  i.idSeat === item.Id ) &&
+                  i.idSeat === item.Id &&
+                  i.departureDay === departureDay.split('/').join('-')) &&
                   cart.some(i =>
                   i.idTrainCar === idTrainCar &&
                   i.idSeat === item.Id &&
@@ -111,7 +112,7 @@
         </div>
       </div>
       <div class="col-3 cart">
-        <cart></cart>
+        <cart :countDowns="countDowns"></cart>
       </div>
     </div>
     <div class="row q-pb-xl">
@@ -204,7 +205,7 @@
   import {mapActions, mapState} from "vuex";
   import Cart from '../pages/cart'
   import firebase from 'src/api/firebase';
-
+  import moment from 'moment'
   const db = firebase.firestore()
   export default {
     components: {
@@ -223,28 +224,31 @@
         trainCarType: '',
         startIndex: 0,
         endIndex: 0,
-        chosenSeats: []
+        chosenSeats: [],
+        countDowns: []
       }
     },
     created() {
       this.myTrainCars = this.trainCars.reverse()
       this.trainSelected = this.idTrain
       this.tranCarSelected = this.idTrainCar
+      db.collection('chosen-seats').onSnapshot(ref => {
+        ref.docChanges().forEach(change => {
+          const {newIndex, oldIndex, doc, type} = change
+          if (type === 'added') {
+            this.chosenSeats.splice(newIndex, 0, doc.data())
+          } else if (type === 'modified') {
+            this.chosenSeats.splice(oldIndex, 1)
+            this.chosenSeats.splice(newIndex, 0, doc.data())
+          } else if (type === 'removed') {
+            this.chosenSeats.splice(oldIndex, 1)
+          }
+        })
+      })
     },
     mounted() {
-      db.collection("chosen-seats")
-        .onSnapshot(function (querySnapshot) {
-          let data = []
-          querySnapshot.forEach(function (doc) {
-            data.push(doc._key);
-          });
-        console.log(data)
-        });
     },
     watch: {
-      chosenSeats(val) {
-        console.log(val)
-      },
       async trainSelected(val) {
         await this.loadTrainCars({
           params: {
@@ -322,61 +326,106 @@
       }),
 
       pickSeats(seat) {
-        function containsObject(obj, list) {
-          for (let i = 0; i < list.length; i++) {
-            if (list[i] === obj) {
-              return true;
-            }
-          }
-          return false;
-        }
+        let departureDay = this.departureDay.split("/").join("-")
         let rs = this.chosenSeats.some(i =>
           i.idTrainCar === this.idTrainCar &&
           i.idSeat === seat.Id &&
-          i.departureDay === this.departureDay.split("/").join("-"))
-        // let object = {}
-        // containsObject()
-        console.log(rs)
-        if (seat.EmptySeat === true || rs === false){
+          i.departureDay === departureDay &&
+          this.cart.some(i =>
+            i.idTrainCar === this.idTrainCar &&
+            i.idSeat === seat.Id &&
+            i.idTrain === this.idTrain) === false)
+        if (seat.EmptySeat === false) {
+          this.$q.notify({
+            message: 'Seat already reserved',
+            color: 'red'
+          })
+        } else if (rs === true) {
+          this.$q.notify({
+            message: 'Seat are being transacted',
+            color: 'yellow-9'
+          })
+        } else {
           let route = this.routes
-        let point = route[0].Points
-        let departureTime = 0;
-        let startIndex = 0;
-        let endIndex = 0;
-        for (let item of this.routes) {
-          if (item.TrainId === this.idTrain) {
-            departureTime = item.Points[0].ArrivalTime
-            startIndex = this.routes.StartIndex
-            endIndex = this.routes.endIndex
+          let point = route[0].Points
+          let departureTime = 0;
+          let startIndex = 0;
+          let endIndex = 0;
+          for (let item of this.routes) {
+            if (item.TrainId === this.idTrain) {
+              departureTime = item.Points[0].ArrivalTime
+              startIndex = this.routes.StartIndex
+              endIndex = this.routes.EndIndex
+            }
+          }
+          let cartItem = {
+            idSeat: seat.Id,
+            price: seat.Price,
+            seatNo: seat.SeatNo,
+            idTrainCar: this.idTrainCar,
+            idTrain: this.idTrain,
+            trainCarNumber: this.trainCarNumber,
+            trainCarType: this.trainCarType,
+            trainCode: this.trainCode,
+            departureDay: this.departureDay.split("/").join("-"),
+            departureTime: departureTime,
+            idSource: point[0].IdStation,
+            idDestination: point[point.length - 1].IdStation,
+            sourceName: point[0].NameStation,
+            destinationName: point[point.length - 1].NameStation,
+            startIndex: this.startIndex,
+            endIndex: this.endIndex
+          }
+          this.updateCartItem(cartItem)
+          let rs = this.countDowns.some(
+            item =>
+              item.idTrainCar === cartItem.idTrainCar &&
+              item.idSeat === cartItem.idSeat &&
+              item.departureDay === cartItem.departureDay
+          )
+          if (rs) {
+            this.countDowns.splice(
+              this.countDowns.findIndex(
+                x =>
+                  x.idTrainCar === cartItem.idTrainCar &&
+                  x.idSeat === cartItem.idSeat &&
+                  x.departureDay === cartItem.departureDay
+              ), 1)
+          } else {
+            let countDown = {
+              idSeat: seat.Id,
+              idTrainCar: this.idTrainCar,
+              departureDay: this.departureDay.split("/").join("-"),
+              countDown: 5
+            }
+            this.countDowns.push(countDown)
+            this.countDownTimer(cartItem)
           }
         }
-        let cartItem = {
-          idSeat: seat.Id,
-          price: seat.Price,
-          seatNo: seat.SeatNo,
-          idTrainCar: this.idTrainCar,
-          idTrain: this.idTrain,
-          trainCarNumber: this.trainCarNumber,
-          trainCarType: this.trainCarType,
-          trainCode: this.trainCode,
-          departureDay: this.departureDay.split("/").join("-"),
-          departureTime: departureTime,
-          idSource: point[0].IdStation,
-          idDestination: point[point.length - 1].IdStation,
-          sourceName: point[0].NameStation,
-          destinationName: point[point.length - 1].NameStation,
-          startIndex: this.startIndex,
-          endIndex: this.endIndex
+      },
+      countDownTimer(cartItem) {
+        for(let i of this.countDowns){
+          if (i.idTrainCar === cartItem.idTrainCar && i.idSeat === cartItem.idSeat && i.departureDay === cartItem.departureDay){
+              if (i.countDown > 0){
+                setTimeout(() => {
+                  i.countDown -= 1
+                  this.countDownTimer(cartItem)
+                }, 1000)
+              }
+              else {
+                this.countDowns.splice(
+                  this.countDowns.findIndex(
+                    x =>
+                      x.idTrainCar === cartItem.idTrainCar &&
+                      x.idSeat === cartItem.idSeat &&
+                      x.departureDay === cartItem.departureDay
+                  ), 1)
+                this.updateCartItem(cartItem)
+              }
+          }
         }
-        this.updateCartItem(cartItem)
-      } else {
-        this.$q.notify({
-          message: 'Seat already reserved',
-          color: 'red'
-        })
       }
     }
-  }
   }
 </script>
 <style type="text/scss">
