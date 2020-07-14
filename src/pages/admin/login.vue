@@ -36,7 +36,7 @@
               />
 
               <div>
-                <q-btn label="Login" to="/admin/dashboard" type="button" color="primary"/>
+                <q-btn label="Login" @click="login" type="button" color="primary"/>
 
                 <a style="font-size: 30px;" class="float-right" href="https://github.com/sponsors/mayank091193"
                    target="_blank" title="Donate"><i class="fas fa-heart" style="color: #eb5daa"></i></a>
@@ -49,8 +49,6 @@
   </q-layout>
 </template>
 
-<script type="text/javascript">
-</script>
 <script>
 
 
@@ -172,7 +170,19 @@
                 },
                 "retina_detect": true
             });
+        },
+      methods:{
+        login(){
+          if(this.username!== 'admin' || this.password !== 'Admin@CRM'){
+            this.$q.notify({
+              message: 'Wrong username or password',
+              color: 'red'
+            })
+          }else {
+            this.$router.push('admin/orders')
+          }
         }
+      }
     }
 </script>
 
