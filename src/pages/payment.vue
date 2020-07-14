@@ -55,7 +55,13 @@
           </template>
           <template v-slot:body-cell-code="props">
             <q-td :props="props">
-              <div class="text-blue-9">Locked for <span class="text-red-10">{{ props.row.countDown }}</span> second(s)</div>
+              <div class="text-blue-9" v-if="props.row.countDown > 0">Locked for <span class="text-red-10">{{ props.row.countDown }}</span>
+                second(s)
+              </div>
+              <div class="text-red-10" v-else>
+                <q-icon name="report_problem" color="red" size="sm"/>
+                Unlocked
+              </div>
               <div>{{props.row.trainCode}} {{props.row.sourceName}} - {{props.row.destinationName}}</div>
               <div>{{props.row.departureDay}} {{props.row.departureTime | time}}</div>
               <div>Coach {{props.row.trainCarNumber}} seat {{props.row.seatNo}}</div>
@@ -81,6 +87,17 @@
             </q-td>
             <q-td :props="props" v-else>
               {{ props.row.price }}
+            </q-td>
+          </template>
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn dense
+                     flat
+                     unelevated
+                     icon="delete_outline"
+                     color="blue-10"
+                     size="lg"
+                     @click="removeItem(props.row)"/>
             </q-td>
           </template>
         </q-table>
@@ -235,13 +252,19 @@
             align: "left",
             label: "Cost ($)",
             field: "cost"
+          },
+          {
+            name: "action",
+            align: "left",
+            label: "Remove",
+            field: ""
           }
         ]
       }
     },
     watch: {
-      isSaving(val){
-        if (val === false){
+      isSaving(val) {
+        if (val === false) {
           this.$q.notify({
             message: 'Submit order success. Have good day <3',
             color: 'green'
@@ -273,34 +296,50 @@
         loadObjects: 'ticket/loadObjects',
         saveOrder: 'ticket/submitOrder',
       }),
-      objectType(id){
-        console.log(id)
-        for(let item of this.objects){
-          if(item.Id === id){
+      objectType(id) {
+        for (let item of this.objects) {
+          if (item.Id === id) {
             return item.PricePercent
           }
         }
       },
+      removeItem(props){
+        this.data.splice(
+          this.data.findIndex(
+            x =>
+              x.idTrainCar === props.idTrainCar &&
+              x.idSeat === props.idSeat &&
+              x.departureDay === props.departureDay
+          ), 1)
+      },
       submitOrder() {
-        this.$q.loading.show()
-        let order = {
-          tickets: [],
-          typePayment: parseInt(this.radio),
-          ...this.order
+        let rs = this.data.some(d=>d.countDown <= 0)
+          if (rs){
+            this.$q.notify({
+              message: 'Please remove them from the ordered ticket list before making payment',
+              color: 'red'
+            })
+          }else {
+            this.$q.loading.show()
+            let order = {
+              tickets: [],
+              typePayment: parseInt(this.radio),
+              ...this.order
+            }
+            for (let i = 0; i < this.data.length; i++) {
+              order.tickets.push({
+                idSeat: this.data[i].idSeat,
+                identityNumber: this.identityNumbers[i],
+                name: this.names[i],
+                idObject: this.idObjects[i],
+                departureDay: this.data[i].departureDay,
+                idTrainCar: this.data[i].idTrainCar,
+                idSource: this.data[i].idSource,
+                idDestination: this.data[i].idDestination
+              })
+            }
+            this.saveOrder(order)
         }
-        for (let i = 0; i < this.data.length; i++) {
-          order.tickets.push({
-            idSeat: this.data[i].idSeat,
-            identityNumber: this.identityNumbers[i],
-            name: this.names[i],
-            idObject: this.idObjects[i],
-            departureDay: this.data[i].departureDay,
-            idTrainCar: this.data[i].idTrainCar,
-            idSource: this.data[i].idSource,
-            idDestination: this.data[i].idDestination
-          })
-        }
-        this.saveOrder(order)
       }
     }
   }

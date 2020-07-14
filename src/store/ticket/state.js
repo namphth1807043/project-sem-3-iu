@@ -15,5 +15,6 @@ export default {
   objects: [],
   isSaved: false,
   isSaving: false,
-  chosenSeats: []
+  chosenSeats: [],
+  countDowns: []
 }

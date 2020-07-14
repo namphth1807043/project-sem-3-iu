@@ -19,15 +19,6 @@
         <hr/>
         <q-scroll-area style="height:100%;">
           <q-list padding>
-            <q-item active-class="tab-active" to="/admin/dashboard" exact class="q-ma-sm navigation-item" clickable v-ripple>
-              <q-item-section avatar>
-                <q-icon name="dashboard"/>
-              </q-item-section>
-
-              <q-item-section>
-                Dashboard
-              </q-item-section>
-            </q-item>
 
             <q-item active-class="tab-active" to="stations" class="q-ma-sm navigation-item" clickable v-ripple>
               <q-item-section avatar>

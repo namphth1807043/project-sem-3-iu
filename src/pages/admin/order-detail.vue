@@ -1,11 +1,11 @@
 <template>
-  <q-page class="q-pa-sm">
     <q-table
+      class="q-pa-sm"
       title="Tickets"
       :data="orderDetail"
       :columns="cols"
       row-key="Name"
-      hide-pagination
+      hide-bottom
     >
       <template v-slot:body-cell-index="props">
         <q-td :props="props">
@@ -18,7 +18,6 @@
         </q-td>
       </template>
     </q-table>
-  </q-page>
 </template>
 <script>
   import {mapState, mapActions} from 'vuex'

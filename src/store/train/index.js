@@ -1,5 +1,5 @@
 import { httpClient } from "src/api/http";
-const API_URL = "http://undifinedtrain.azurewebsites.net/api/trains";
+const API_URL = `${process.env.API_URL}/trains`;
 const state = {};
 
 const getters = {};
@@ -44,7 +44,19 @@ const actions = {
     } catch (error) {
       return { error };
     }
-  }
+  },
+
+  async getListTrainCars(ctx, params) {
+    try {
+      const response = await httpClient.get(`${API_URL}`, {
+        params
+      });
+
+      return response;
+    } catch (error) {
+      return { error };
+    }
+  },
 };
 
 export default {

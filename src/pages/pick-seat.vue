@@ -69,6 +69,8 @@
                   'bg-yellow-9 text-white': chosenSeats.some(i =>
                   i.idTrainCar === idTrainCar &&
                   i.idSeat === item.Id &&
+                  i.endIndex === endIndex &&
+                  i.startIndex === startIndex &&
                   i.departureDay === departureDay.split('/').join('-')) &&
                   cart.some(i =>
                   i.idTrainCar === idTrainCar &&
@@ -113,7 +115,7 @@
         </div>
       </div>
       <div class="col-3 cart">
-        <cart :countDowns="countDowns"></cart>
+        <cart></cart>
       </div>
     </div>
     <div class="row q-pb-xl">
@@ -330,8 +332,6 @@
       ...mapActions({
         loadTrainCars: 'ticket/loadTrainCars',
         loadSeats: 'ticket/loadSeats',
-        // addCartItem: 'ticket/addCartItem',
-        // removeCartItem: 'ticket/removeCartItem',
         updateCartItem: 'ticket/updateCartItem'
       }),
 
@@ -384,57 +384,12 @@
             sourceName: point[0].NameStation,
             destinationName: point[point.length - 1].NameStation,
             startIndex: this.startIndex,
-            endIndex: this.endIndex
+            endIndex: this.endIndex,
+            countDown: 120
           }
           this.updateCartItem(cartItem)
-          let rs = this.countDowns.some(
-            item =>
-              item.idTrainCar === cartItem.idTrainCar &&
-              item.idSeat === cartItem.idSeat &&
-              item.departureDay === cartItem.departureDay
-          )
-          if (rs) {
-            this.countDowns.splice(
-              this.countDowns.findIndex(
-                x =>
-                  x.idTrainCar === cartItem.idTrainCar &&
-                  x.idSeat === cartItem.idSeat &&
-                  x.departureDay === cartItem.departureDay
-              ), 1)
-          } else {
-            let countDown = {
-              idSeat: seat.Id,
-              idTrainCar: this.idTrainCar,
-              departureDay: this.departureDay.split("/").join("-"),
-              countDown: 10
-            }
-            this.countDowns.push(countDown)
-            this.countDownTimer(cartItem)
-          }
         }
       },
-      countDownTimer(cartItem) {
-        for(let i of this.countDowns){
-          if (i.idTrainCar === cartItem.idTrainCar && i.idSeat === cartItem.idSeat && i.departureDay === cartItem.departureDay){
-              if (i.countDown > 0){
-                setTimeout(() => {
-                  i.countDown -= 1
-                  this.countDownTimer(cartItem)
-                }, 1000)
-              }
-              else {
-                this.countDowns.splice(
-                  this.countDowns.findIndex(
-                    x =>
-                      x.idTrainCar === cartItem.idTrainCar &&
-                      x.idSeat === cartItem.idSeat &&
-                      x.departureDay === cartItem.departureDay
-                  ), 1)
-                this.updateCartItem(cartItem)
-              }
-          }
-        }
-      }
     }
   }
 </script>

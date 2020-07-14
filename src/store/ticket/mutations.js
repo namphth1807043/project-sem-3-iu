@@ -1,7 +1,9 @@
 import moment from 'moment'
 
 import firebase from 'src/api/firebase';
+
 const db = firebase.firestore()
+
 export function fetchAllStationsBegin(state) {
   state.stations = []
   state.error = null
@@ -80,6 +82,34 @@ export function fetchSeatsError(state, error) {
 }
 
 export function updateCart(state, cartItem) {
+  function countDownTimer(cartItem) {
+    for (let i of state.cart) {
+      if (i.idTrainCar === cartItem.idTrainCar && i.idSeat === cartItem.idSeat && i.departureDay === cartItem.departureDay) {
+        if (i.countDown > 0) {
+          setTimeout(() => {
+            i.countDown -= 1
+            countDownTimer(cartItem)
+          }, 1000)
+        } else {
+          state.cart.splice(
+            state.cart.findIndex(
+              x =>
+                x.idTrainCar === cartItem.idTrainCar &&
+                x.idSeat === cartItem.idSeat &&
+                x.departureDay === cartItem.departureDay
+            ), 1)
+          db.collection("chosen-seats")
+            .doc(`${cartItem.idTrainCar}-${cartItem.idSeat}-${cartItem.departureDay}`)
+            .delete()
+            .then(function () {
+            }).catch(function (error) {
+            console.error("Error removing document: ", error);
+          });
+        }
+      }
+    }
+  }
+
   let id = `${cartItem.idTrainCar}-${cartItem.idSeat}-${cartItem.departureDay}`
   let rs = state.cart.some(
     item =>
@@ -95,12 +125,13 @@ export function updateCart(state, cartItem) {
           x.idSeat === cartItem.idSeat &&
           x.idTrain === cartItem.idTrain
       ), 1)
-    db.collection("chosen-seats").doc(id).delete().then(function() {
-    }).catch(function(error) {
+    db.collection("chosen-seats").doc(id).delete().then(function () {
+    }).catch(function (error) {
       console.error("Error removing document: ", error);
     });
   } else {
     state.cart.push(cartItem)
+    countDownTimer(cartItem)
     db.collection("chosen-seats")
       .doc(id)
       .set({

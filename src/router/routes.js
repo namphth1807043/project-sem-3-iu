@@ -15,7 +15,6 @@ const routes = [
   {
     path: '/admin', component: () => import('layouts/MainLayoutAdmin.vue'),
     children: [
-      { path: 'dashboard', component: () => import('pages/admin/dashboard.vue') },
       { path: 'stations', component: () => import('pages/admin/stations.vue') },
       { path: 'trains', component: () => import("pages/admin/train.vue") },
       { path: 'objects', component: () => import("pages/admin/objects.vue") },
