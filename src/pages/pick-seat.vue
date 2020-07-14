@@ -71,6 +71,7 @@
                   i.idSeat === item.Id &&
                   i.endIndex === endIndex &&
                   i.startIndex === startIndex &&
+                  item.EmptySeat === true &&
                   i.departureDay === departureDay.split('/').join('-')) &&
                   cart.some(i =>
                   i.idTrainCar === idTrainCar &&
