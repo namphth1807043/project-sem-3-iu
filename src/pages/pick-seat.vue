@@ -98,6 +98,8 @@
                   'bg-yellow-9 text-white': chosenSeats.some(i =>
                   i.idTrainCar === idTrainCar &&
                   i.idSeat === item.Id &&
+                  i.endIndex === endIndex &&
+                  i.startIndex === startIndex &&
                   i.departureDay === departureDay.split('/').join('-')) &&
                   cart.some(i =>
                   i.idTrainCar === idTrainCar &&
@@ -209,6 +211,7 @@
   import Cart from '../pages/cart'
   import firebase from 'src/api/firebase';
   import moment from 'moment'
+
   const db = firebase.firestore()
   export default {
     components: {
@@ -232,12 +235,11 @@
       }
     },
     created() {
-      if (this.idTrain && this.idTrainCar){
+      if (this.idTrain && this.idTrainCar) {
         this.myTrainCars = this.trainCars.reverse()
         this.trainSelected = this.idTrain
         this.tranCarSelected = this.idTrainCar
-      }
-      else {
+      } else {
         this.$router.push('/')
       }
       db.collection('chosen-seats').onSnapshot(ref => {
@@ -258,7 +260,7 @@
     },
     watch: {
       async trainSelected(val) {
-        if (val){
+        if (val) {
           await this.loadTrainCars({
             params: {
               IdTrain: val
@@ -281,7 +283,7 @@
               this.endIndex = item.EndIndex
             }
           }
-        }else {
+        } else {
           await this.$router.push('')
         }
       },
