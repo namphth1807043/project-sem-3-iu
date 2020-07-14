@@ -264,7 +264,7 @@
     },
     watch: {
       isSaving(val) {
-        if (val === false) {
+        if (val === false && this.radio === '1') {
           this.$q.notify({
             message: 'Submit order success. Have good day <3',
             color: 'green'
